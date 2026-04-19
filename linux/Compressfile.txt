@@ -31,7 +31,15 @@ tar -cjf /root/backup.tar.bz2 /tmp
 
 
 
----
+---  extract files or folder ---
+tar -xvf mybackup.tar 
+
+-x --extract files or folder
+-v -- show the files beim archieved or unzop 
+-f -- output files
+
+
+
 
 
 
