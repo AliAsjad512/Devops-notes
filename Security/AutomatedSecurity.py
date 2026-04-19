@@ -42,3 +42,38 @@ class SecurityGroupAuditor:
                             'description': ipv6_range.get('Description', '')
                         })
         return findings
+    
+
+    def find_unused_security_groups(self):
+        """Find security groups not attached to any ENI"""
+        sgs = self.get_all_security_groups()
+        # Get all attached groups
+        attached = set()
+        instances = self.ec2.describe_instances()
+        for reservation in instances['Reservations']:
+            for instance in reservation['Instances']:
+                for sg in instance.get('SecurityGroups', []):
+                    attached.add(sg['GroupId'])
+        # Also check network interfaces
+        nics = self.ec2.describe_network_interfaces()
+        for nic in nics['NetworkInterfaces']:
+            for sg in nic.get('Groups', []):
+                attached.add(sg['GroupId'])
+        unused = []
+        for sg in sgs:
+            if sg['GroupId'] not in attached and sg['GroupName'] != 'default':
+                unused.append({
+                    'group_id': sg['GroupId'],
+                    'group_name': sg['GroupName'],
+                    'vpc_id': sg['VpcId']
+                })
+        return unused
+
+    def generate_report(self):
+        """Generate full audit report"""
+        report = {
+            'region': self.region,
+            'overly_permissive': self.find_overly_permissive(),
+            'unused_security_groups': self.find_unused_security_groups()
+        }
+        return report
