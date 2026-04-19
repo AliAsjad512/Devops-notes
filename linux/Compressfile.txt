@@ -20,6 +20,8 @@ tar -czf RootBackup.tar.gzip  /root
 -f --output file
 This command will make the gzip compressed folder
 
+----
+
 
 
 
