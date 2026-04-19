@@ -77,3 +77,27 @@ class SecurityGroupAuditor:
             'unused_security_groups': self.find_unused_security_groups()
         }
         return report
+    
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Security Group Auditor')
+    parser.add_argument('--region', default='us-east-1')
+    parser.add_argument('--output', help='Output JSON file')
+    args = parser.parse_args()
+
+    auditor = SecurityGroupAuditor(args.region)
+    report = auditor.generate_report()
+
+    print(f"🔒 Security Group Audit - {args.region}")
+    print("=" * 50)
+    print(f"Overly permissive rules (0.0.0.0/0): {len(report['overly_permissive'])}")
+    for r in report['overly_permissive']:
+        print(f"  - {r['group_name']} ({r['group_id']}) : {r['protocol']} port {r['port']} from {r['cidr']}")
+    print(f"Unused security groups: {len(report['unused_security_groups'])}")
+    for sg in report['unused_security_groups']:
+        print(f"  - {sg['group_name']} ({sg['group_id']}) in VPC {sg['vpc_id']}")
+
+    if args.output:
+        import json
+        with open(args.output, 'w') as f:
+            json.dump(report, f, indent=2)
+        print(f"✅ Report saved to {args.output}")
