@@ -20,7 +20,18 @@ tar -czf RootBackup.tar.gzip  /root
 -f --output file
 This command will make the gzip compressed folder
 
-----
+----Let’s create compressed files that take up less disk space due to higher compression efficiency--
+
+tar -cjf /root/backup.tar.bz2 /tmp
+
+-c → create archive
+-j → compress using bzip2
+-f → file name of the archive
+-- this command create file that do not burdan on memory but it is not faster like gzip 
+
+
+
+---
 
 
 
