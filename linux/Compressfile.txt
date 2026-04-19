@@ -7,9 +7,20 @@ file compression flags
 -v --verbose show the file being archieved or zip
 -f --file follow this option with the archive file being create
 
+------create simple tar foler--------
 tar -cf myBackup.tar app1.log app2.log
 
 we create the archive folder of two files app1.log and app2.log
+
+------create gzip folder or file ----
+
+tar -czf RootBackup.tar.gzip  /root
+-c --create
+-z  -- zip
+-f --output file
+This command will make the gzip compressed folder
+
+
 
 
 
