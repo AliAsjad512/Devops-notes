@@ -1,0 +1,12 @@
+
+file compression flags
+
+-c --create to create archive file 
+-t --list list the content of archive file
+-c --extract extract the archive file
+-v --verbose show the file being archieved or zip
+-f --file follow this option with the archive file being create
+
+
+
+
