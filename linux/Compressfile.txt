@@ -39,6 +39,11 @@ tar -xvf mybackup.tar
 -f -- output files
 
 
+-- show the files or folder of archieved folder
+tar -tf myBackup.tar.gz or just tar
+
+-t -- list the files or folder 
+
 
 
 
