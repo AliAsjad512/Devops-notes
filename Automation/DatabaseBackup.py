@@ -57,7 +57,7 @@ class DatabaseBackup:
         return f.encrypt(data)
 
     def compress_data(self, data):
-        """Gzip compress data"""
+        
         return gzip.compress(data)
 
     def upload_to_s3(self, data, filename):
