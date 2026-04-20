@@ -66,7 +66,7 @@ class DatabaseBackup:
         print(f"✅ Uploaded {filename} to s3://{self.s3_bucket}/{self.s3_prefix}{filename}")
 
     def create_backup(self, encrypt_key=None):
-        """Create full backup"""
+        
         timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f"{self.database}_{timestamp}.dump"
 
