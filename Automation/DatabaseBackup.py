@@ -17,3 +17,20 @@ class DatabaseBackup:
         self.s3 = boto3.client('s3')
         self.s3_bucket = s3_bucket
         self.s3_prefix = s3_prefix.rstrip('/') + '/'
+    def dump_postgres(self):
+        """Dump PostgreSQL database"""
+        env = os.environ.copy()
+        env['PGPASSWORD'] = self.password
+        cmd = [
+            'pg_dump',
+            '-h', self.host,
+            '-p', str(self.port),
+            '-U', self.user,
+            '-d', self.database,
+            '-F', 'c',  # custom format
+            '-f', '-'
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=False, env=env)
+        if result.returncode != 0:
+            raise Exception(f"pg_dump failed: {result.stderr}")
+        return result.stdout
