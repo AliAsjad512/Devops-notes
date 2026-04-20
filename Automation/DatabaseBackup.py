@@ -34,3 +34,19 @@ class DatabaseBackup:
         if result.returncode != 0:
             raise Exception(f"pg_dump failed: {result.stderr}")
         return result.stdout
+    def dump_mysql(self):
+        """Dump MySQL database"""
+        cmd = [
+            'mysqldump',
+            '-h', self.host,
+            '-P', str(self.port),
+            '-u', self.user,
+            f'-p{self.password}',
+            self.database,
+            '--single-transaction',
+            '--compress'
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=False)
+        if result.returncode != 0:
+            raise Exception(f"mysqldump failed: {result.stderr}")
+        return result.stdout
