@@ -113,3 +113,30 @@ class DatabaseBackup:
                     deleted.append(obj['Key'])
         print(f"🗑️ Deleted {len(deleted)} old backups")
         return deleted
+    
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Database Backup to S3')
+    parser.add_argument('--db-type', choices=['postgres', 'mysql'], required=True)
+    parser.add_argument('--host', required=True)
+    parser.add_argument('--port', type=int, required=True)
+    parser.add_argument('--user', required=True)
+    parser.add_argument('--password', required=True)
+    parser.add_argument('--database', required=True)
+    parser.add_argument('--s3-bucket', required=True)
+    parser.add_argument('--s3-prefix', default='backups/')
+    parser.add_argument('--encrypt-key', help='Fernet encryption key')
+    parser.add_argument('--action', choices=['backup', 'list', 'cleanup'], default='backup')
+    parser.add_argument('--days', type=int, default=30)
+    args = parser.parse_args()
+
+    backup = DatabaseBackup(args.db_type, args.host, args.port, args.user, args.password,
+                            args.database, args.s3_bucket, args.s3_prefix)
+    if args.action == 'backup':
+        backup.create_backup(args.encrypt_key)
+    elif args.action == 'list':
+        backups = backup.list_backups()
+        print(f"Backups in s3://{args.s3_bucket}/{args.s3_prefix}:")
+        for b in backups:
+            print(f"  - {b}")
+    elif args.action == 'cleanup':
+        backup.delete_old_backups(args.days)
