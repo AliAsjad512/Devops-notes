@@ -95,7 +95,7 @@ class DatabaseBackup:
         print(f"✅ Backup complete: {filename_final}")
         return filename_final
     def list_backups(self):
-        """List available backups"""
+        
         response = self.s3.list_objects_v2(Bucket=self.s3_bucket, Prefix=self.s3_prefix)
         if 'Contents' not in response:
             return []
