@@ -1,0 +1,18 @@
+ Step 1  check file system
+
+         file -s (system) volume name
+
+ Step 2  If step show data in output , then we need to formate the volumes
+    
+        mkfs -t ext4 volume name
+        make fileSystem 
+        -t type of fileSystem 
+        ext4 is type of fileSystem
+        at the end type filename 
+Step 3 create mout point (mean where you want to attach volume )
+      mkdir -p /web_datat  -p= Parent directory
+
+Step 4 Mount the volumes
+
+mount volume name and mount point
+mount /dev/sdd /web_Data
