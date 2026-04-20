@@ -61,7 +61,7 @@ class DatabaseBackup:
         return gzip.compress(data)
 
     def upload_to_s3(self, data, filename):
-        """Upload to S3"""
+        
         self.s3.put_object(Bucket=self.s3_bucket, Key=self.s3_prefix + filename, Body=data)
         print(f"✅ Uploaded {filename} to s3://{self.s3_bucket}/{self.s3_prefix}{filename}")
 
