@@ -94,3 +94,22 @@ class DatabaseBackup:
         self.upload_to_s3(final_data, filename_final)
         print(f"✅ Backup complete: {filename_final}")
         return filename_final
+    def list_backups(self):
+        """List available backups"""
+        response = self.s3.list_objects_v2(Bucket=self.s3_bucket, Prefix=self.s3_prefix)
+        if 'Contents' not in response:
+            return []
+        return [obj['Key'] for obj in response['Contents']]
+
+    def delete_old_backups(self, days=30):
+        """Delete backups older than N days"""
+        cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=days)
+        deleted = []
+        response = self.s3.list_objects_v2(Bucket=self.s3_bucket, Prefix=self.s3_prefix)
+        if 'Contents' in response:
+            for obj in response['Contents']:
+                if obj['LastModified'] < cutoff:
+                    self.s3.delete_object(Bucket=self.s3_bucket, Key=obj['Key'])
+                    deleted.append(obj['Key'])
+        print(f"🗑️ Deleted {len(deleted)} old backups")
+        return deleted
