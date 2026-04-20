@@ -50,3 +50,47 @@ class DatabaseBackup:
         if result.returncode != 0:
             raise Exception(f"mysqldump failed: {result.stderr}")
         return result.stdout
+    
+    def encrypt_data(self, data, key):
+        """Encrypt backup data with Fernet"""
+        f = Fernet(key)
+        return f.encrypt(data)
+
+    def compress_data(self, data):
+        """Gzip compress data"""
+        return gzip.compress(data)
+
+    def upload_to_s3(self, data, filename):
+        """Upload to S3"""
+        self.s3.put_object(Bucket=self.s3_bucket, Key=self.s3_prefix + filename, Body=data)
+        print(f"✅ Uploaded {filename} to s3://{self.s3_bucket}/{self.s3_prefix}{filename}")
+
+    def create_backup(self, encrypt_key=None):
+        """Create full backup"""
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"{self.database}_{timestamp}.dump"
+
+        # Dump database
+        print(f"📦 Dumping {self.db_type} database {self.database}...")
+        if self.db_type == 'postgres':
+            dump_data = self.dump_postgres()
+        else:
+            dump_data = self.dump_mysql()
+
+        # Compress
+        compressed = self.compress_data(dump_data)
+        filename_gz = filename + '.gz'
+
+        # Encrypt if key provided
+        if encrypt_key:
+            encrypted = self.encrypt_data(compressed, encrypt_key)
+            final_data = encrypted
+            filename_final = filename_gz + '.enc'
+        else:
+            final_data = compressed
+            filename_final = filename_gz
+
+        # Upload
+        self.upload_to_s3(final_data, filename_final)
+        print(f"✅ Backup complete: {filename_final}")
+        return filename_final
