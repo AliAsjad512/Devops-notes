@@ -94,3 +94,37 @@ class AzureKeyVault:
     def list_secrets(self, prefix=''):
         secrets = self.client.list_properties_of_secrets()
         return [s.name for s in secrets if s.name.startswith(prefix)]
+    
+
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Multi-Cloud Secret Sync')
+    parser.add_argument('--source', choices=['aws', 'gcp', 'azure'], required=True)
+    parser.add_argument('--dest', choices=['aws', 'gcp', 'azure'], required=True)
+    parser.add_argument('--secret', help='Secret name to sync')
+    parser.add_argument('--prefix', default='', help='Sync all secrets with prefix')
+    parser.add_argument('--aws-region', default='us-east-1')
+    parser.add_argument('--gcp-project', help='GCP project ID')
+    parser.add_argument('--azure-vault', help='Azure Key Vault URL')
+    args = parser.parse_args()
+
+    source_config = {}
+    dest_config = {}
+    if args.source == 'aws':
+        source_config['region'] = args.aws_region
+    elif args.source == 'gcp':
+        source_config['project_id'] = args.gcp_project
+    elif args.source == 'azure':
+        source_config['vault_url'] = args.azure_vault
+
+    if args.dest == 'aws':
+        dest_config['region'] = args.aws_region
+    elif args.dest == 'gcp':
+        dest_config['project_id'] = args.gcp_project
+    elif args.dest == 'azure':
+        dest_config['vault_url'] = args.azure_vault
+
+    syncer = SecretSynchronizer(args.source, source_config, args.dest, dest_config)
+    if args.secret:
+        syncer.sync_secret(args.secret)
+    else:
+        syncer.sync_all(args.prefix)
