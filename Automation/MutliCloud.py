@@ -51,3 +51,30 @@ class AWSSecretManager:
     def list_secrets(self, prefix=''):
         response = self.client.list_secrets()
         return [s['Name'] for s in response['SecretList'] if s['Name'].startswith(prefix)]
+class GCPSecretManager:
+    def __init__(self, project_id):
+        self.client = secretmanager.SecretManagerServiceClient()
+        self.project_id = project_id
+
+    def get_secret(self, secret_name):
+        name = f"projects/{self.project_id}/secrets/{secret_name}/versions/latest"
+        try:
+            response = self.client.access_secret_version(name=name)
+            return response.payload.data.decode('UTF-8')
+        except:
+            return None
+
+    def put_secret(self, secret_name, value):
+        parent = f"projects/{self.project_id}"
+        try:
+            self.client.create_secret(parent=parent, secret_id=secret_name, secret={'replication': {'automatic': {}}})
+        except:
+            pass
+        name = f"{parent}/secrets/{secret_name}"
+        self.client.add_secret_version(parent=name, payload={'data': value.encode('UTF-8')})
+
+    def list_secrets(self, prefix=''):
+        parent = f"projects/{self.project_id}"
+        secrets = self.client.list_secrets(parent=parent)
+        return [s.name.split('/')[-1] for s in secrets if s.name.split('/')[-1].startswith(prefix)]
+
