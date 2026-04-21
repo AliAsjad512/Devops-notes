@@ -33,3 +33,21 @@ class SecretSynchronizer:
         secrets = self.source.list_secrets(prefix)
         for secret in secrets:
             self.sync_secret(secret)
+
+class AWSSecretManager:
+    def __init__(self, region):
+        self.client = boto3.client('secretsmanager', region_name=region)
+
+    def get_secret(self, secret_name):
+        try:
+            response = self.client.get_secret_value(SecretId=secret_name)
+            return response['SecretString']
+        except:
+            return None
+
+    def put_secret(self, secret_name, value):
+        self.client.create_secret(Name=secret_name, SecretString=value, ForceOverwriteReplicaSecret=True)
+
+    def list_secrets(self, prefix=''):
+        response = self.client.list_secrets()
+        return [s['Name'] for s in response['SecretList'] if s['Name'].startswith(prefix)]
