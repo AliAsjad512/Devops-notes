@@ -28,3 +28,8 @@ class SecretSynchronizer:
             print(f"✅ Synced {secret_name} from {self.source_cloud} to {self.dest_cloud}")
         else:
             print(f"❌ Secret {secret_name} not found in {self.source_cloud}")
+    def sync_all(self, prefix=''):
+        """Sync all secrets matching prefix"""
+        secrets = self.source.list_secrets(prefix)
+        for secret in secrets:
+            self.sync_secret(secret)
