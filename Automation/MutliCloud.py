@@ -78,3 +78,19 @@ class GCPSecretManager:
         secrets = self.client.list_secrets(parent=parent)
         return [s.name.split('/')[-1] for s in secrets if s.name.split('/')[-1].startswith(prefix)]
 
+class AzureKeyVault:
+    def __init__(self, vault_url):
+        self.client = SecretClient(vault_url=vault_url, credential=DefaultAzureCredential())
+
+    def get_secret(self, secret_name):
+        try:
+            return self.client.get_secret(secret_name).value
+        except:
+            return None
+
+    def put_secret(self, secret_name, value):
+        self.client.set_secret(secret_name, value)
+
+    def list_secrets(self, prefix=''):
+        secrets = self.client.list_properties_of_secrets()
+        return [s.name for s in secrets if s.name.startswith(prefix)]
