@@ -55,3 +55,32 @@ class ConfigManager:
             print(json.dumps(config, indent=2))
         else:
             print(yaml.dump(config))
+
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Multi-Environment Config Manager')
+    parser.add_argument('--base', required=True, help='Base config YAML')
+    parser.add_argument('--env-dir', required=True, help='Environment overrides directory')
+    parser.add_argument('--env', required=True, help='Environment name')
+    parser.add_argument('--action', choices=['show', 'diff', 'validate', 'export'], default='show')
+    parser.add_argument('--diff-with', help='Second environment for diff')
+    parser.add_argument('--schema', help='JSON schema for validation')
+    parser.add_argument('--format', choices=['json', 'yaml'], default='json')
+    args = parser.parse_args()
+
+    mgr = ConfigManager(args.base, args.env_dir)
+    if args.action == 'show':
+        config = mgr.get_env_config(args.env)
+        print(yaml.dump(config))
+    elif args.action == 'diff':
+        if not args.diff_with:
+            print("❌ --diff-with required for diff action")
+        else:
+            diff = mgr.diff_envs(args.env, args.diff_with)
+            if diff:
+                print(json.dumps(diff, indent=2))
+            else:
+                print("Configs are identical")
+    elif args.action == 'validate':
+        mgr.validate(args.env, args.schema)
+    elif args.action == 'export':
+        mgr.export(args.env, args.format)
