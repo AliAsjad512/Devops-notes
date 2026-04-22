@@ -35,3 +35,17 @@ class ConfigManager:
         cfg2 = self.get_env_config(env2)
         diff = DeepDiff(cfg1, cfg2, ignore_order=True)
         return diff.to_dict()
+    def validate(self, env, schema_path=None):
+        """Validate config against JSON schema"""
+        if schema_path:
+            import jsonschema
+            with open(schema_path, 'r') as f:
+                schema = json.load(f)
+            config = self.get_env_config(env)
+            try:
+                jsonschema.validate(config, schema)
+                print(f"✅ Config for {env} is valid")
+            except jsonschema.ValidationError as e:
+                print(f"❌ Config invalid: {e}")
+                return False
+        return True
