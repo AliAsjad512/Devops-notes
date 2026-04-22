@@ -49,3 +49,9 @@ class ConfigManager:
                 print(f"❌ Config invalid: {e}")
                 return False
         return True
+    def export(self, env, output_format='json'):
+        config = self.get_env_config(env)
+        if output_format == 'json':
+            print(json.dumps(config, indent=2))
+        else:
+            print(yaml.dump(config))
