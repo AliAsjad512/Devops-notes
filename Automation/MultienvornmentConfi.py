@@ -14,3 +14,12 @@ class ConfigManager:
     def _load_yaml(self, path):
         with open(path, 'r') as f:
             return yaml.safe_load(f)
+        
+    def get_env_config(self, env):
+        env_file = self.env_config_dir / f"{env}.yaml"
+        if not env_file.exists():
+            raise FileNotFoundError(f"Config for env {env} not found")
+        env_override = self._load_yaml(env_file)
+        # Deep merge: env overrides base
+        merged = self._deep_merge(copy.deepcopy(self.base), env_override)
+        return merged
