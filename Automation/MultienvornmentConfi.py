@@ -30,3 +30,8 @@ class ConfigManager:
             else:
                 base[key] = value
         return base
+    def diff_envs(self, env1, env2):
+        cfg1 = self.get_env_config(env1)
+        cfg2 = self.get_env_config(env2)
+        diff = DeepDiff(cfg1, cfg2, ignore_order=True)
+        return diff.to_dict()
