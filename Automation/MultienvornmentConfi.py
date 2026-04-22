@@ -11,3 +11,6 @@ class ConfigManager:
         self.base_config_path = Path(base_config_path)
         self.env_config_dir = Path(env_config_dir)
         self.base = self._load_yaml(base_config_path)
+    def _load_yaml(self, path):
+        with open(path, 'r') as f:
+            return yaml.safe_load(f)
