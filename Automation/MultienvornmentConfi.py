@@ -23,3 +23,10 @@ class ConfigManager:
         # Deep merge: env overrides base
         merged = self._deep_merge(copy.deepcopy(self.base), env_override)
         return merged
+    def _deep_merge(self, base, override):
+        for key, value in override.items():
+            if key in base and isinstance(base[key], dict) and isinstance(value, dict):
+                self._deep_merge(base[key], value)
+            else:
+                base[key] = value
+        return base
