@@ -52,3 +52,21 @@ class DockerImageCleaner:
                 self.client.images.remove(img.id)
                 print(f"✅ Deleted untagged: {img.id[:12]}")
         return len(images)
+    
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Docker Image Cleaner')
+    parser.add_argument('--days', type=int, default=30, help='Age in days')
+    parser.add_argument('--dry-run', action='store_true', help='Preview without deleting')
+    parser.add_argument('--untagged-only', action='store_true', help='Delete only untagged images')
+    parser.add_argument('--all-unused', action='store_true', help='Delete all unused images older than days')
+    args = parser.parse_args()
+
+    cleaner = DockerImageCleaner()
+    if args.untagged_only:
+        count = cleaner.delete_untagged(args.dry_run)
+        print(f"Deleted {count} untagged images")
+    elif args.all_unused:
+        count = cleaner.delete_old_images(args.days, args.dry_run)
+        print(f"Deleted {count} old/unused images")
+    else:
+        parser.print_help()
