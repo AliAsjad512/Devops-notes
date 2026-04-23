@@ -31,3 +31,15 @@ class DockerImageCleaner:
             if img['created'] < cutoff and not any(t != '<none>:<none>' for t in img['tags']):
                 unused.append(img)
         return unused
+    def delete_old_images(self, days_old=30, dry_run=True):
+        to_delete = self.find_unused_images(days_old)
+        for img in to_delete:
+            if dry_run:
+                print(f"[DRY RUN] Would delete: {img['id']} (created {img['created']})")
+            else:
+                try:
+                    self.client.images.remove(img['id'], force=True)
+                    print(f"✅ Deleted: {img['id']}")
+                except Exception as e:
+                    print(f"❌ Failed to delete {img['id']}: {e}")
+        return len(to_delete)
