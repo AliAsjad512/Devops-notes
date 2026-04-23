@@ -54,7 +54,7 @@ class DockerImageCleaner:
         return len(images)
     
     if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Docker Image Cleaner')
+     parser = argparse.ArgumentParser(description='Docker Image Cleaner')
     parser.add_argument('--days', type=int, default=30, help='Age in days')
     parser.add_argument('--dry-run', action='store_true', help='Preview without deleting')
     parser.add_argument('--untagged-only', action='store_true', help='Delete only untagged images')
