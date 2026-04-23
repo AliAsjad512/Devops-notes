@@ -43,3 +43,12 @@ class DockerImageCleaner:
                 except Exception as e:
                     print(f"❌ Failed to delete {img['id']}: {e}")
         return len(to_delete)
+    def delete_untagged(self, dry_run=True):
+        images = self.client.images.list(filters={'dangling': True})
+        for img in images:
+            if dry_run:
+                print(f"[DRY RUN] Would delete untagged: {img.id[:12]}")
+            else:
+                self.client.images.remove(img.id)
+                print(f"✅ Deleted untagged: {img.id[:12]}")
+        return len(images)
