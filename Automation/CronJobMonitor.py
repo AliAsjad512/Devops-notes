@@ -71,3 +71,29 @@ class CronMonitor:
                 server.login(email_config['user'], email_config['password'])
             server.send_message(msg)
         print("✅ Alert sent")
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Cron Job Monitor')
+    parser.add_argument('--log', default='/var/log/syslog', help='Log file path')
+    parser.add_argument('--interval', type=int, default=60, help='Expected interval (minutes)')
+    parser.add_argument('--email-to', help='Email for alerts')
+    parser.add_argument('--smtp-host', default='localhost')
+    parser.add_argument('--smtp-port', type=int, default=25)
+    args = parser.parse_args()
+
+    monitor = CronMonitor(args.log)
+    missed = monitor.check_missed_jobs(args.interval)
+    if missed:
+        print(f"⚠️ Found {len(missed)} potentially missed jobs")
+        for job in missed:
+            print(f"  - {job['job']}")
+        if args.email_to:
+            email_config = {
+                'from': 'cron-monitor@localhost',
+                'to': args.email_to,
+                'smtp_host': args.smtp_host,
+                'smtp_port': args.smtp_port
+            }
+            monitor.send_alert(missed, email_config)
+    else:
+        print("✅ All cron jobs appear to be running on schedule")
