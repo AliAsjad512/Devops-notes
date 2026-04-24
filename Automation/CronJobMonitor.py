@@ -40,3 +40,16 @@ class CronMonitor:
                 except:
                     continue
         return jobs
+    def check_missed_jobs(self, expected_interval_minutes=60):
+        """Check if jobs ran within expected interval"""
+        jobs = self.parse_cron_log(24)
+        missed = []
+        for job, data in jobs.items():
+            if not data['runs']:
+                missed.append({'job': job, 'reason': 'No runs in last 24h'})
+            else:
+                last_run = max(data['runs'])
+                minutes_since = (datetime.datetime.now() - last_run).total_seconds() / 60
+                if minutes_since > expected_interval_minutes * 1.5:
+                    missed.append({'job': job, 'last_run': last_run.isoformat(), 'minutes_since': round(minutes_since)})
+        return missed
