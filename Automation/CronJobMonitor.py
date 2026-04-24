@@ -53,3 +53,21 @@ class CronMonitor:
                 if minutes_since > expected_interval_minutes * 1.5:
                     missed.append({'job': job, 'last_run': last_run.isoformat(), 'minutes_since': round(minutes_since)})
         return missed
+    def send_alert(self, missed_jobs, email_config):
+        """Send email alert for missed jobs"""
+        if not missed_jobs:
+            return
+        body = "The following cron jobs may be missed:\n\n"
+        for job in missed_jobs:
+            body += f"- {job['job']}: {job.get('reason', f"Last run {job['minutes_since']} minutes ago")}\n"
+        msg = MIMEText(body)
+        msg['Subject'] = 'Cron Job Monitor Alert'
+        msg['From'] = email_config['from']
+        msg['To'] = email_config['to']
+        with smtplib.SMTP(email_config['smtp_host'], email_config['smtp_port']) as server:
+            if email_config.get('tls'):
+                server.starttls()
+            if email_config.get('user'):
+                server.login(email_config['user'], email_config['password'])
+            server.send_message(msg)
+        print("✅ Alert sent")
