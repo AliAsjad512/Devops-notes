@@ -28,3 +28,7 @@ class ReleaseNotesGenerator:
         if result.returncode == 0:
             return result.stdout.strip()
         return None
+    def get_commits_between_tags(self, from_tag, to_tag='HEAD'):
+        cmd = ['git', '-C', self.repo_path, 'log', f'{from_tag}..{to_tag}', '--pretty=format:%s']
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        return result.stdout.split('\n') if result.stdout else []
