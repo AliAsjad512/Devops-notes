@@ -32,3 +32,24 @@ class ReleaseNotesGenerator:
         cmd = ['git', '-C', self.repo_path, 'log', f'{from_tag}..{to_tag}', '--pretty=format:%s']
         result = subprocess.run(cmd, capture_output=True, text=True)
         return result.stdout.split('\n') if result.stdout else []
+    def categorize_commits(self, commits):
+        categories = {
+            'feat': [],
+            'fix': [],
+            'docs': [],
+            'chore': [],
+            'refactor': [],
+            'test': [],
+            'other': []
+        }
+        for commit in commits:
+            msg = commit if isinstance(commit, str) else commit['message']
+            matched = False
+            for cat in categories:
+                if msg.startswith(f'{cat}:'):
+                    categories[cat].append(msg)
+                    matched = True
+                    break
+            if not matched:
+                categories['other'].append(msg)
+        return categories
