@@ -21,3 +21,10 @@ class ReleaseNotesGenerator:
                 'date': parts[2] if len(parts) > 2 else ''
             })
         return commits
+    def get_last_tag(self):
+        """Get the most recent tag"""
+        cmd = ['git', '-C', self.repo_path, 'describe', '--tags', '--abbrev=0']
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode == 0:
+            return result.stdout.strip()
+        return None
