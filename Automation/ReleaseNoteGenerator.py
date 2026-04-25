@@ -63,4 +63,33 @@ class ReleaseNotesGenerator:
                     lines.append(f"- {item}")
                 lines.append("")
         return '\n'.join(lines)
+    
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Release Notes Generator')
+    parser.add_argument('--since', help='Date (YYYY-MM-DD) or "last-tag"')
+    parser.add_argument('--output', help='Output file')
+    parser.add_argument('--version', required=True, help='Release version')
+    args = parser.parse_args()
+
+    gen = ReleaseNotesGenerator()
+    if args.since == 'last-tag':
+        last_tag = gen.get_last_tag()
+        if last_tag:
+            commits = gen.get_commits_between_tags(last_tag)
+        else:
+            commits = gen.get_commits_since('1 month ago')
+    elif args.since:
+        commits = gen.get_commits_since(args.since)
+    else:
+        commits = gen.get_commits_since('1 week ago')
+
+    categorized = gen.categorize_commits(commits if isinstance(commits[0], str) else [c['message'] for c in commits])
+    notes = gen.generate_markdown(args.version, categorized)
+
+    if args.output:
+        with open(args.output, 'w') as f:
+            f.write(notes)
+        print(f"✅ Release notes saved to {args.output}")
+    else:
+        print(notes)
 
