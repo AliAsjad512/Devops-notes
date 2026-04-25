@@ -53,3 +53,14 @@ class ReleaseNotesGenerator:
             if not matched:
                 categories['other'].append(msg)
         return categories
+    def generate_markdown(self, version, commits_categorized, date=None):
+        date_str = date or datetime.now().strftime('%Y-%m-%d')
+        lines = [f"# Release {version} ({date_str})", ""]
+        for cat, items in commits_categorized.items():
+            if items:
+                lines.append(f"## {cat.capitalize()}")
+                for item in items:
+                    lines.append(f"- {item}")
+                lines.append("")
+        return '\n'.join(lines)
+
