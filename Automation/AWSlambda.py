@@ -74,3 +74,16 @@ from collections import deque
         except KeyboardInterrupt:
             print("\n🛑 Stopped tailing")
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='AWS Lambda Logs Tailer')
+    parser.add_argument('function', help='Lambda function name')
+    parser.add_argument('--region', default='us-east-1')
+    parser.add_argument('--lines', type=int, default=100, help='Number of recent lines')
+    parser.add_argument('--follow', action='store_true', help='Real-time tail')
+    args = parser.parse_args()
+
+    tailer = LambdaLogTailer(args.region)
+    if args.follow:
+        tailer.realtime_tail(args.function)
+    else:
+        tailer.tail_function(args.function, args.lines)
