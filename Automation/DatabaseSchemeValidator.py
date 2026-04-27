@@ -63,4 +63,33 @@ from deepdiff import DeepDiff
     def compare_schemas(self, schema1, schema2):
         diff = DeepDiff(schema1, schema2, ignore_order=True)
         return diff
+    
+
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Schema Migration Validator')
+    parser.add_argument('--db-type', choices=['postgres', 'mysql'], required=True)
+    parser.add_argument('--host1', required=True)
+    parser.add_argument('--port1', type=int, required=True)
+    parser.add_argument('--user1', required=True)
+    parser.add_argument('--password1', required=True)
+    parser.add_argument('--database1', required=True)
+    parser.add_argument('--host2', required=True)
+    parser.add_argument('--port2', type=int, required=True)
+    parser.add_argument('--user2', required=True)
+    parser.add_argument('--password2', required=True)
+    parser.add_argument('--database2', required=True)
+    args = parser.parse_args()
+
+    v1 = SchemaValidator(args.db_type, args.host1, args.port1, args.user1, args.password1, args.database1)
+    v2 = SchemaValidator(args.db_type, args.host2, args.port2, args.user2, args.password2, args.database2)
+
+    schema1 = v1.get_schema()
+    schema2 = v2.get_schema()
+    diff = v1.compare_schemas(schema1, schema2)
+
+    if diff:
+        print("❌ Schema differences found:")
+        print(json.dumps(diff, indent=2, default=str))
+    else:
+        print("✅ Schemas are identical")
 
