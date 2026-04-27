@@ -33,4 +33,24 @@ from deepdiff import DeepDiff
                 'nullable': nullable == 'YES'
             })
         return schema
+    
+    def get_schema_mysql(self):
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT table_name, column_name, data_type, is_nullable
+            FROM information_schema.columns
+            WHERE table_schema = DATABASE()
+            ORDER BY table_name, ordinal_position
+        """)
+        schema = {}
+        for row in cursor.fetchall():
+            table, col, dtype, nullable = row
+            if table not in schema:
+                schema[table] = []
+            schema[table].append({
+                'column': col,
+                'type': dtype,
+                'nullable': nullable == 'YES'
+            })
+        return schema
 
