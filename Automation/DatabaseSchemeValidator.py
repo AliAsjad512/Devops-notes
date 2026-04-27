@@ -13,4 +13,24 @@ from deepdiff import DeepDiff
             return psycopg2.connect(host=host, port=port, user=user, password=password, database=database)
         else:
             return pymysql.connect(host=host, port=port, user=user, password=password, database=database)
+        
+    def get_schema_postgres(self):
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT table_name, column_name, data_type, is_nullable
+            FROM information_schema.columns
+            WHERE table_schema = 'public'
+            ORDER BY table_name, ordinal_position
+        """)
+        schema = {}
+        for row in cursor.fetchall():
+            table, col, dtype, nullable = row
+            if table not in schema:
+                schema[table] = []
+            schema[table].append({
+                'column': col,
+                'type': dtype,
+                'nullable': nullable == 'YES'
+            })
+        return schema
 
