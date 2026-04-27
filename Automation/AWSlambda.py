@@ -39,3 +39,38 @@ from collections import deque
         for event in events[-lines:]:
             ts = datetime.datetime.fromtimestamp(event['timestamp']/1000).isoformat()
             print(f"[{ts}] {event['message'].strip()}")
+      def realtime_tail(self, function_name, interval=2):
+        """Continuously stream new logs"""
+        log_group_name = f'/aws/lambda/{function_name}'
+        # Get the latest log stream
+        stream_name = None
+        last_timestamp = 0
+        print(f"Tailing logs for {function_name} (Ctrl+C to stop)")
+        try:
+            while True:
+                streams = self.logs.describe_log_streams(
+                    logGroupName=log_group_name,
+                    orderBy='LastEventTime',
+                    descending=True,
+                    limit=1
+                )
+                if streams['logStreams']:
+                    new_stream = streams['logStreams'][0]['logStreamName']
+                    if new_stream != stream_name:
+                        stream_name = new_stream
+                        last_timestamp = 0
+                    # Get new events
+                    resp = self.logs.get_log_events(
+                        logGroupName=log_group_name,
+                        logStreamName=stream_name,
+                        startTime=last_timestamp + 1,
+                        startFromHead=True
+                    )
+                    for event in resp['events']:
+                        ts = datetime.datetime.fromtimestamp(event['timestamp']/1000).isoformat()
+                        print(f"[{ts}] {event['message'].strip()}")
+                        last_timestamp = event['timestamp']
+                time.sleep(interval)
+        except KeyboardInterrupt:
+            print("\n🛑 Stopped tailing")
+
