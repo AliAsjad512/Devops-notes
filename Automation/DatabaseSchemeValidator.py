@@ -53,4 +53,14 @@ from deepdiff import DeepDiff
                 'nullable': nullable == 'YES'
             })
         return schema
+    
+     def get_schema(self):
+        if self.db_type == 'postgres':
+            return self.get_schema_postgres()
+        else:
+            return self.get_schema_mysql()
+
+    def compare_schemas(self, schema1, schema2):
+        diff = DeepDiff(schema1, schema2, ignore_order=True)
+        return diff
 
