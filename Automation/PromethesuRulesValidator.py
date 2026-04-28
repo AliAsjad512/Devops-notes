@@ -52,3 +52,8 @@ class PrometheusRuleValidator:
                 if len(label_matches) > 5:
                     warnings.append(f"High label count in expr: {label_matches}")
         return warnings
+    def generate_report(self, rule_file):
+        rules = self.load_rules(rule_file)
+        errors = self.validate_syntax(rules)
+        warnings = self.check_cardinality(rules)
+        return {'file': rule_file, 'errors': errors, 'warnings': warnings}
