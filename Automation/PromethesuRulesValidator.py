@@ -41,3 +41,14 @@ class PrometheusRuleValidator:
             return []
         except Exception as e:
             return [f"Cannot connect to Prometheus: {e}"]
+    def check_cardinality(self, rules):
+        """Estimate metric cardinality risk"""
+        warnings = []
+        for group in rules.get('groups', []):
+            for rule in group.get('rules', []):
+                expr = rule.get('expr', '')
+                # Count label cardinality risks
+                label_matches = re.findall(r'(\w+)\s*=\s*"[^"]+"', expr)
+                if len(label_matches) > 5:
+                    warnings.append(f"High label count in expr: {label_matches}")
+        return warnings
