@@ -57,3 +57,22 @@ class PrometheusRuleValidator:
         errors = self.validate_syntax(rules)
         warnings = self.check_cardinality(rules)
         return {'file': rule_file, 'errors': errors, 'warnings': warnings}
+    
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Prometheus Rules Validator')
+    parser.add_argument('rule_file', help='YAML rule file')
+    parser.add_argument('--prometheus-url', help='Validate against live Prometheus')
+    args = parser.parse_args()
+
+    validator = PrometheusRuleValidator(args.prometheus_url)
+    report = validator.generate_report(args.rule_file)
+    if report['errors']:
+        print(f"❌ Validation errors in {args.rule_file}:")
+        for err in report['errors']:
+            print(f"  - {err}")
+    else:
+        print(f"✅ Syntax validation passed for {args.rule_file}")
+    if report['warnings']:
+        print(f"⚠️ Warnings:")
+        for warn in report['warnings']:
+            print(f"  - {warn}")
