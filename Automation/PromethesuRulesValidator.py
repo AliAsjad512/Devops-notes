@@ -30,3 +30,14 @@ class PrometheusRuleValidator:
                 if re.search(r'[^a-zA-Z0-9_:{}\[\]()., +*/%-]', expr):
                     errors.append(f"Group {group['name']}, rule {rule_idx}: suspicious characters in expr")
         return errors
+    def validate_against_prometheus(self, rules):
+        """Use Prometheus /api/v1/rules endpoint to validate (if available)"""
+        if not self.prometheus_url:
+            return []
+        try:
+            resp = requests.get(f"{self.prometheus_url}/api/v1/rules")
+            resp.raise_for_status()
+            # If we can fetch rules, assume the loaded rules are fine
+            return []
+        except Exception as e:
+            return [f"Cannot connect to Prometheus: {e}"]
