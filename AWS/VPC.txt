@@ -1,0 +1,12 @@
+AWS Virtual Private Cloud (VPC) is a service in AWS that provides an isolated network environment for deploying applications and resources.
+
+A VPC allows you to securely isolate your infrastructure, preventing interference or conflicts with other networks. When creating a VPC, you must choose a region, as each VPC exists within a single region.
+
+IP addresses within a VPC are assigned using CIDR (Classless Inter-Domain Routing), which helps define the range of IPs available for your resources.
+
+There are two types of VPCs:
+
+Default VPC – Automatically created by AWS with pre-configured settings.
+Custom VPC – Fully configurable, allowing you to define IP ranges, subnets, and security settings based on your needs.
+
+Communication between VPCs can be established through configuration (such as VPC peering), adding flexibility while maintaining security.
