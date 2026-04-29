@@ -35,3 +35,15 @@ class ServiceNowIncident:
         short = f"[{source}] {alert_name}"
         desc = f"Alert triggered at {datetime.utcnow().isoformat()}\n\nDetails:\n{alert_details}"
         return self.create_incident(short, desc, impact=impact, urgency=impact)
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='ServiceNow Incident Creator')
+    parser.add_argument('--instance', required=True, help='ServiceNow instance name')
+    parser.add_argument('--username', required=True)
+    parser.add_argument('--password', required=True)
+    parser.add_argument('--title', required=True, help='Short description')
+    parser.add_argument('--description', required=True)
+    parser.add_argument('--severity', choices=['critical', 'high', 'medium', 'low'], default='medium')
+    args = parser.parse_args()
+
+    sn = ServiceNowIncident(args.instance, args.username, args.password)
+    sn.create_from_alert(args.title, args.description, args.severity)
