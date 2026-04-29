@@ -28,3 +28,10 @@ class ServiceNowIncident:
         else:
             print(f"❌ Failed to create incident: {resp.text}")
             return None
+    def create_from_alert(self, alert_name, alert_details, severity='high', source='Prometheus'):
+        """Create incident from monitoring alert"""
+        severity_map = {'critical': 1, 'high': 2, 'medium': 3, 'low': 4}
+        impact = severity_map.get(severity.lower(), 3)
+        short = f"[{source}] {alert_name}"
+        desc = f"Alert triggered at {datetime.utcnow().isoformat()}\n\nDetails:\n{alert_details}"
+        return self.create_incident(short, desc, impact=impact, urgency=impact)
