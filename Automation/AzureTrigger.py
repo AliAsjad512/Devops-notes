@@ -18,3 +18,19 @@ class AzureDevOpsPipeline:
         url = f"{self.base_url}/_apis/pipelines?api-version=6.0-preview.1"
         resp = requests.get(url, headers=self.headers)
         return resp.json().get('value', [])
+    def run_pipeline(self, pipeline_id, branch='main', parameters=None):
+        """Trigger a pipeline run"""
+        url = f"{self.base_url}/_apis/pipelines/{pipeline_id}/runs?api-version=6.0-preview.1"
+        payload = {
+            'resources': {'repositories': {'self': {'refName': f'refs/heads/{branch}'}}}
+        }
+        if parameters:
+            payload['templateParameters'] = parameters
+        resp = requests.post(url, headers=self.headers, json=payload)
+        if resp.status_code == 200:
+            run = resp.json()
+            print(f"✅ Pipeline run started: {run['_links']['web']['href']}")
+            return run
+        else:
+            print(f"❌ Failed to start pipeline: {resp.text}")
+            return None
