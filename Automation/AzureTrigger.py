@@ -39,3 +39,21 @@ class AzureDevOpsPipeline:
         url = f"{self.base_url}/_apis/pipelines/runs/{run_id}?api-version=6.0-preview.1"
         resp = requests.get(url, headers=self.headers)
         return resp.json().get('state')
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Azure DevOps Pipeline Trigger')
+    parser.add_argument('--org', required=True, help='Azure DevOps organization')
+    parser.add_argument('--project', required=True, help='Project name')
+    parser.add_argument('--pat', required=True, help='Personal Access Token')
+    parser.add_argument('--pipeline-id', type=int, required=True, help='Pipeline ID')
+    parser.add_argument('--branch', default='main')
+    parser.add_argument('--param', nargs='*', help='Parameters as key=value')
+    args = parser.parse_args()
+
+    params = {}
+    if args.param:
+        for p in args.param:
+            key, val = p.split('=', 1)
+            params[key] = val
+
+    client = AzureDevOpsPipeline(args.org, args.project, args.pat)
+    client.run_pipeline(args.pipeline_id, args.branch, params if params else None)
