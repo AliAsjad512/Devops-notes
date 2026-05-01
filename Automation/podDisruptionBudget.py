@@ -22,3 +22,21 @@ class PDBCalculator:
             deploy = yaml.safe_load(f)
         replicas = deploy.get('spec', {}).get('replicas', 1)
         return PDBCalculator.suggest_pdb(replicas)
+
+   if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='K8s PDB Calculator')
+    parser.add_argument('--replicas', type=int, help='Number of replicas')
+    parser.add_argument('--deployment', help='Deployment YAML file')
+    parser.add_argument('--min-percent', type=int, default=50)
+    parser.add_argument('--max-percent', type=int, default=25)
+    args = parser.parse_args()
+
+    if args.deployment:
+        pdb = PDBCalculator.from_deployment_yaml(args.deployment)
+    elif args.replicas:
+        pdb = PDBCalculator.suggest_pdb(args.replicas, args.min_percent, args.max_percent)
+    else:
+        print("❌ Provide --replicas or --deployment")
+        exit(1)
+
+    print(pdb['recommendation'])
