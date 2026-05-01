@@ -15,3 +15,10 @@ class PDBCalculator:
             'max_unavailable': max_unavailable,
             'recommendation': f"apiVersion: policy/v1\nkind: PodDisruptionBudget\nmetadata:\n  name: app\nspec:\n  minAvailable: {min_available}\n  # OR\n  # maxUnavailable: {max_unavailable}"
         }
+ 
+    def from_deployment_yaml(yaml_file):
+        import yaml
+        with open(yaml_file, 'r') as f:
+            deploy = yaml.safe_load(f)
+        replicas = deploy.get('spec', {}).get('replicas', 1)
+        return PDBCalculator.suggest_pdb(replicas)
