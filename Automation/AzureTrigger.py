@@ -34,3 +34,8 @@ class AzureDevOpsPipeline:
         else:
             print(f"❌ Failed to start pipeline: {resp.text}")
             return None
+    def get_pipeline_run_status(self, run_id):
+        """Get status of a pipeline run"""
+        url = f"{self.base_url}/_apis/pipelines/runs/{run_id}?api-version=6.0-preview.1"
+        resp = requests.get(url, headers=self.headers)
+        return resp.json().get('state')
