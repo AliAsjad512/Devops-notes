@@ -13,3 +13,8 @@ class AzureDevOpsPipeline:
             'Content-Type': 'application/json'
         }
         self.base_url = f'https://dev.azure.com/{org}/{project}'
+    def list_pipelines(self):
+        """List all pipelines in the project"""
+        url = f"{self.base_url}/_apis/pipelines?api-version=6.0-preview.1"
+        resp = requests.get(url, headers=self.headers)
+        return resp.json().get('value', [])
