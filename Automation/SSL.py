@@ -44,4 +44,14 @@ class SSLRenewer:
         else:
             self.logger.error(f"Renewal failed: {result.stderr}")
             return False
+    def deploy_cert(self, domain, cert_path, key_path, reload_cmd=None):
+        """Deploy certificate to web server"""
+        # Example: copy certs to nginx location
+        target_cert = f"/etc/nginx/ssl/{domain}.crt"
+        target_key = f"/etc/nginx/ssl/{domain}.key"
+        subprocess.run(['cp', cert_path, target_cert], check=True)
+        subprocess.run(['cp', key_path, target_key], check=True)
+        if reload_cmd:
+            subprocess.run(reload_cmd, shell=True, check=True)
+        self.logger.info(f"✅ Deployed certificate to {target_cert}")
 
