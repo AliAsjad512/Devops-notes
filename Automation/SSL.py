@@ -26,4 +26,22 @@ class SSLRenewer:
         except Exception as e:
             self.logger.error(f"Failed to check cert for {domain}: {e}")
             return None
+    def renew_cert(self, domain, email, webroot_path=None, test_mode=False):
+        """Renew certificate using certbot"""
+        cmd = [self.certbot, 'certonly']
+        if webroot_path:
+            cmd.extend(['--webroot', '-w', webroot_path])
+        else:
+            cmd.append('--standalone')
+        cmd.extend(['-d', domain, '--email', email, '--non-interactive', '--agree-tos'])
+        if test_mode:
+            cmd.append('--test-cert')
+        self.logger.info(f"Running: {' '.join(cmd)}")
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode == 0:
+            self.logger.info(f"✅ Certificate renewed for {domain}")
+            return True
+        else:
+            self.logger.error(f"Renewal failed: {result.stderr}")
+            return False
 
