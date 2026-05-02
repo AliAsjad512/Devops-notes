@@ -54,4 +54,19 @@ class SSLRenewer:
         if reload_cmd:
             subprocess.run(reload_cmd, shell=True, check=True)
         self.logger.info(f"✅ Deployed certificate to {target_cert}")
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='SSL Certificate Renewer')
+    parser.add_argument('--domain', required=True, help='Domain to renew')
+    parser.add_argument('--email', required=True, help='Email for Let\'s Encrypt')
+    parser.add_argument('--webroot', help='Webroot path for HTTP-01 challenge')
+    parser.add_argument('--test', action='store_true', help='Use staging environment')
+    parser.add_argument('--reload-cmd', help='Command to reload web server (e.g., "systemctl reload nginx")')
+    args = parser.parse_args()
+
+    renewer = SSLRenewer()
+    success = renewer.renew_cert(args.domain, args.email, args.webroot, args.test)
+    if success and args.reload_cmd:
+        subprocess.run(args.reload_cmd, shell=True, check=True)
+        print("✅ Web server reloaded")
+
 
