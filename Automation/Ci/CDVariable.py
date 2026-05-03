@@ -43,6 +43,18 @@ class EnvValidator:
             for var in args.required:
                 validator.add_required(var)
         if args.pattern:
+         for var, regex in args.pattern:
+                validator.add_pattern(var, regex)
+        errors = validator.validate()
+
+    if errors:
+        print("❌ Validation failed:")
+        for err in errors:
+            print(f"  - {err}")
+        sys.exit(1)
+    else:
+        print("✅ All environment variables are valid")
+        sys.exit(0)
 
 
 
