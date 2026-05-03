@@ -11,6 +11,16 @@ class EnvValidator:
         self.required_vars.append(var_name)
     def add_pattern(self, var_name, regex):
         self.patterns[var_name] = regex
+    def validate(self):
+        errors = []
+        for var in self.required_vars:
+            if var not in os.environ or not os.environ[var]:
+                errors.append(f"Missing required env var: {var}")
+        for var, pattern in self.patterns.items():
+            value = os.environ.get(var, '')
+            if not re.match(pattern, value):
+                errors.append(f"Env var {var}='{value}' does not match required pattern: {pattern}")
+        return errors
 
 
 
