@@ -21,6 +21,13 @@ class EnvValidator:
             if not re.match(pattern, value):
                 errors.append(f"Env var {var}='{value}' does not match required pattern: {pattern}")
         return errors
+    def validate_from_file(self, config_file):
+        import yaml
+        with open(config_file, 'r') as f:
+            config = yaml.safe_load(f)
+        self.required_vars = config.get('required', [])
+        self.patterns = config.get('patterns', {})
+        return self.validate()
 
 
 
