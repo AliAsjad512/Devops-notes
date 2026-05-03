@@ -9,5 +9,8 @@ class EnvValidator:
         self.patterns = patterns or {}
     def add_required(self, var_name):
         self.required_vars.append(var_name)
+    def add_pattern(self, var_name, regex):
+        self.patterns[var_name] = regex
+
 
 
