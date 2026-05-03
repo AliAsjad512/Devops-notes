@@ -28,6 +28,21 @@ class EnvValidator:
         self.required_vars = config.get('required', [])
         self.patterns = config.get('patterns', {})
         return self.validate()
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Environment Variable Validator')
+    parser.add_argument('--required', nargs='+', help='Required env vars')
+    parser.add_argument('--pattern', nargs=2, action='append', metavar=('VAR', 'REGEX'), help='Pattern check')
+    parser.add_argument('--config', help='YAML config file')
+    args = parser.parse_args()
+
+    validator = EnvValidator()
+    if args.config:
+        errors = validator.validate_from_file(args.config)
+    else:
+        if args.required:
+            for var in args.required:
+                validator.add_required(var)
+        if args.pattern:
 
 
 
