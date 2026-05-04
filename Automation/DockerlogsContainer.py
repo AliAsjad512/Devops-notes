@@ -35,3 +35,14 @@ class DockerLogCollector:
             for f in futures:
                 logs.append(f.result())
         return logs
+    def save_logs(self, logs, output_file, compress=False):
+        data = {'timestamp': datetime.utcnow().isoformat(), 'logs': logs}
+        if compress:
+            with gzip.open(output_file + '.gz', 'wt', encoding='utf-8') as f:
+                json.dump(data, f, indent=2)
+            print(f"✅ Saved compressed logs to {output_file}.gz")
+        else:
+            with open(output_file, 'w') as f:
+                json.dump(data, f, indent=2)
+            print(f"✅ Saved logs to {output_file}")
+
