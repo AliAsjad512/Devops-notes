@@ -46,3 +46,20 @@ class DockerLogCollector:
                 json.dump(data, f, indent=2)
             print(f"✅ Saved logs to {output_file}")
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Docker Log Collector')
+    parser.add_argument('--label', help='Filter containers by label')
+    parser.add_argument('--name', help='Filter by name pattern')
+    parser.add_argument('--since', help='Since timestamp (e.g., "2025-01-01T00:00:00")')
+    parser.add_argument('--tail', type=int, default=1000)
+    parser.add_argument('--output', default='docker_logs.json')
+    parser.add_argument('--compress', action='store_true')
+    args = parser.parse_args()
+
+    collector = DockerLogCollector()
+    since = None
+    if args.since:
+        since = datetime.fromisoformat(args.since)
+    logs = collector.collect_all(label_filter=args.label, name_filter=args.name, since=since, tail=args.tail)
+    collector.save_logs(logs, args.output, args.compress)
+
