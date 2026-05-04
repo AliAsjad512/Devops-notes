@@ -27,3 +27,11 @@ class DockerLogCollector:
             'logs': logs,
             'collected_at': datetime.utcnow().isoformat()
         }
+    def collect_all(self, label_filter=None, name_filter=None, since=None, tail=1000):
+        containers = self.get_containers(label_filter, name_filter)
+        logs = []
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            futures = [executor.submit(self.collect_logs, c, since, tail) for c in containers]
+            for f in futures:
+                logs.append(f.result())
+        return logs
