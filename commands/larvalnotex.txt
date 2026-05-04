@@ -1,0 +1,27 @@
+📅 Date: May 3, 2026
+🚀 Project: Laravel on EC2
+⚙️ Stack: Nginx + PHP 8.5 + MySQL
+
+✅ What I Did:
+- Launched EC2 instance
+- Installed PHP, Nginx, MySQL
+- Deployed Laravel app
+
+❌ Problems I Faced:
+- 502 Bad Gateway
+- File not found
+- dpkg lock
+
+💡 How I Fixed Them:
+- Changed PHP-FPM socket version
+- Fixed Nginx root path
+- Killed unattended-upgrades
+
+📚 What I Learned:
+- Nginx server blocks
+- PHP-FPM socket matching
+- AWS Security Groups
+
+⏱️ Time Taken: X hours
+⭐ Difficulty: 7/10
+🔗 Resources Used: DigitalOcean article link
