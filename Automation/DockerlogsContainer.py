@@ -16,3 +16,14 @@ class DockerLogCollector:
         if name_filter:
             filters['name'] = name_filter
         return self.client.containers.list(filters=filters)
+    def collect_logs(self, container, since=None, tail=1000):
+        kwargs = {'timestamps': True, 'tail': tail}
+        if since:
+            kwargs['since'] = int(since.timestamp())
+        logs = container.logs(**kwargs).decode('utf-8', errors='ignore')
+        return {
+            'container_id': container.short_id,
+            'container_name': container.name,
+            'logs': logs,
+            'collected_at': datetime.utcnow().isoformat()
+        }
