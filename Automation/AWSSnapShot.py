@@ -22,4 +22,14 @@ class EBSSnapshotScheduler:
         snapshot = self.ec2.create_snapshot(VolumeId=volume_id, Description=desc)
         print(f"✅ Creating snapshot {snapshot['SnapshotId']} for volume {volume_id}")
         return snapshot['SnapshotId']
+    def create_snapshots_for_all(self, volume_ids=None, tag_filter=None):
+        volumes = self.get_volumes(volume_ids, tag_filter)
+        snapshots = []
+        for vol in volumes:
+            snap_id = self.create_snapshot(vol['VolumeId'])
+            # Add retention tag
+            retention_date = (datetime.datetime.now() + datetime.timedelta(days=30)).isoformat()
+            self.ec2.create_tags(Resources=[snap_id], Tags=[{'Key': 'DeleteAfter', 'Value': retention_date}])
+            snapshots.append(snap_id)
+        return snapshots
 
