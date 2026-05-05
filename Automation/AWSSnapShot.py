@@ -48,4 +48,20 @@ class EBSSnapshotScheduler:
                     deleted.append(snap['SnapshotId'])
                     print(f"🗑️ Deleted old snapshot {snap['SnapshotId']}")
         return deleted
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='EBS Snapshot Scheduler')
+    parser.add_argument('--action', choices=['create', 'cleanup'], required=True)
+    parser.add_argument('--volume-ids', nargs='+', help='Specific volume IDs')
+    parser.add_argument('--tag-filter', help='Filter volumes by tag (e.g., Backup=true)')
+    parser.add_argument('--retention-days', type=int, default=30)
+    parser.add_argument('--region', default='us-east-1')
+    args = parser.parse_args()
+
+    scheduler = EBSSnapshotScheduler(args.region)
+    if args.action == 'create':
+        snapshots = scheduler.create_snapshots_for_all(args.volume_ids, args.tag_filter)
+        print(f"Created {len(snapshots)} snapshots")
+    else:
+        deleted = scheduler.delete_old_snapshots(args.retention_days)
+        print(f"Deleted {len(deleted)} old snapshots")
 
