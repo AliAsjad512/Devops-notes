@@ -17,3 +17,9 @@ class EBSSnapshotScheduler:
             filters.append({'Name': f'tag:{key}', 'Values': [value]})
         response = self.ec2.describe_volumes(Filters=filters)
         return response['Volumes']
+    def create_snapshot(self, volume_id, description=None):
+        desc = description or f"Automated snapshot at {datetime.datetime.utcnow().isoformat()}"
+        snapshot = self.ec2.create_snapshot(VolumeId=volume_id, Description=desc)
+        print(f"✅ Creating snapshot {snapshot['SnapshotId']} for volume {volume_id}")
+        return snapshot['SnapshotId']
+
