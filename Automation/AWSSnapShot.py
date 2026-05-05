@@ -32,4 +32,20 @@ class EBSSnapshotScheduler:
             self.ec2.create_tags(Resources=[snap_id], Tags=[{'Key': 'DeleteAfter', 'Value': retention_date}])
             snapshots.append(snap_id)
         return snapshots
+    def delete_old_snapshots(self, retention_days=30):
+        cutoff = datetime.datetime.now() - datetime.timedelta(days=retention_days)
+        snapshots = self.ec2.describe_snapshots(OwnerIds=['self'])['Snapshots']
+        deleted = []
+        for snap in snapshots:
+            if snap['StartTime'].replace(tzinfo=None) < cutoff:
+                # Check for DeleteAfter tag
+                delete_after = None
+                for tag in snap.get('Tags', []):
+                    if tag['Key'] == 'DeleteAfter':
+                        delete_after = datetime.datetime.fromisoformat(tag['Value'])
+                if delete_after and delete_after < datetime.datetime.now():
+                    self.ec2.delete_snapshot(SnapshotId=snap['SnapshotId'])
+                    deleted.append(snap['SnapshotId'])
+                    print(f"🗑️ Deleted old snapshot {snap['SnapshotId']}")
+        return deleted
 
