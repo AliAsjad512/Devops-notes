@@ -35,3 +35,17 @@ class HelmTester:
             return False, e.stderr.decode()
         finally:
             os.unlink(tmp_file)
+    def run_tests(self, values_files=None, set_values=None):
+        lint_ok, lint_out = self.lint()
+        if not lint_ok:
+            return {'success': False, 'step': 'lint', 'error': lint_out}
+        rendered = self.template(values_files, set_values)
+        if not rendered:
+            return {'success': False, 'step': 'template', 'error': 'Empty output'}
+        # Try to split into multiple YAML docs and validate each
+        docs = [d for d in rendered.split('---') if d.strip()]
+        for doc in docs:
+            valid, err = self.validate_k8s_manifests(doc)
+            if not valid:
+                return {'success': False, 'step': 'validate', 'error': err}
+        return {'success': True, 'manifests_count': len(docs)}
