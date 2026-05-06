@@ -5,3 +5,7 @@ import yaml
 import tempfile
 import os
 import json
+
+class HelmTester:
+    def __init__(self, chart_path):
+        self.chart_path = chart_path
