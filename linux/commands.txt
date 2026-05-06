@@ -1,0 +1,26 @@
+
+1. find — Find any FILE
+bashfind /etc -name "*.conf"          # find all .conf files
+find /var -name "*.log"           # find all .log files
+find / -name "hostname"           # find a specific file
+find /etc -type f -mtime -7       # find files modified in last 7 days
+
+Think of it as: Google Search for your filesystem
+
+
+2. grep — Find any WORD inside a file
+bashgrep "error" /var/log/nginx/error.log    # find word in one file
+grep -r "error" /var/log/               # find word in ALL files
+grep -i "error" file.log                # case insensitive
+grep -n "error" file.log                # show line numbers
+
+Think of it as: Ctrl+F for your files
+
+
+3. du -ah /var | sort -rh | head -n 10 — Find LARGEST files
+But I noticed a small mistake in your command! ⚠️
+bash# ❌ Your version — flag in wrong order
+du -ah /var | sort -rh | tail n -10
+
+# ✅ Correct version
+du -ah /var | sort -rh | head -n 10
