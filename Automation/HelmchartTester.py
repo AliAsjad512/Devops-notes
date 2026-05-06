@@ -49,3 +49,25 @@ class HelmTester:
             if not valid:
                 return {'success': False, 'step': 'validate', 'error': err}
         return {'success': True, 'manifests_count': len(docs)}
+    
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Helm Chart Tester')
+    parser.add_argument('chart', help='Path to Helm chart')
+    parser.add_argument('--values', nargs='+', help='Values files')
+    parser.add_argument('--set', nargs='*', help='Set values (key=value)')
+    args = parser.parse_args()
+
+    set_values = {}
+    if args.set:
+        for item in args.set:
+            key, val = item.split('=', 1)
+            set_values[key] = val
+
+    tester = HelmTester(args.chart)
+    result = tester.run_tests(args.values, set_values)
+    if result['success']:
+        print(f"✅ Chart is valid ({result['manifests_count']} manifests)")
+    else:
+        print(f"❌ Validation failed at {result['step']}:")
+        print(result['error'])
+        exit(1)
