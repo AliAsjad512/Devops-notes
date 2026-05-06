@@ -23,3 +23,15 @@ class HelmTester:
         if result.returncode == 0:
             return result.stdout
         return result.stderr
+    def validate_k8s_manifests(self, rendered_yaml):
+        """Use kubeval or kubectl to validate manifests"""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+            f.write(rendered_yaml)
+            tmp_file = f.name
+        try:
+            subprocess.run(['kubectl', 'apply', '--dry-run=client', '-f', tmp_file], capture_output=True, check=True)
+            return True, "Valid"
+        except subprocess.CalledProcessError as e:
+            return False, e.stderr.decode()
+        finally:
+            os.unlink(tmp_file)
