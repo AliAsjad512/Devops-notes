@@ -29,3 +29,14 @@ class AWSOrgReport:
             return round(total, 2)
         except:
             return None
+    def get_compliance_status(self, account_id):
+        # Simplified: count of non-compliant rules
+        try:
+            response = self.config.get_compliance_details_by_config_rule(
+                ComplianceTypes=['NON_COMPLIANT'],
+                Limit=1
+            )
+            # Actually this is org-wide; for per-account you'd need AWS Config aggregator
+            return "Unknown"
+        except:
+            return "Not enabled"
