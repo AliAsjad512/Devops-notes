@@ -53,3 +53,16 @@ class AWSOrgReport:
                 'Compliance': self.get_compliance_status(acc['Id'])
             })
         return report
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='AWS Organization Report')
+    parser.add_argument('--output', default='org_report.json')
+    parser.add_argument('--region', default='us-east-1')
+    args = parser.parse_args()
+
+    reporter = AWSOrgReport(args.region)
+    report = reporter.generate_report()
+    with open(args.output, 'w') as f:
+        json.dump(report, f, indent=2)
+    print(f"✅ Report saved to {args.output}")
+    total_cost = sum(acc.get('CostLast30Days', 0) for acc in report)
+    print(f"Total 30-day cost across org: ${total_cost:.2f}")
