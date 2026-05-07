@@ -40,3 +40,16 @@ class AWSOrgReport:
             return "Unknown"
         except:
             return "Not enabled"
+    def generate_report(self):
+        accounts = self.list_accounts()
+        report = []
+        for acc in accounts:
+            report.append({
+                'Id': acc['Id'],
+                'Name': acc['Name'],
+                'Email': acc['Email'],
+                'Status': acc['Status'],
+                'CostLast30Days': self.get_account_cost(acc['Id']),
+                'Compliance': self.get_compliance_status(acc['Id'])
+            })
+        return report
