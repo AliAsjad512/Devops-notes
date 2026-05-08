@@ -23,4 +23,11 @@ class TfStateDiff:
                         'attributes': instance.get('attributes', {})
                     }
         return resources
+    def diff_with(self, other_state_path):
+        state1 = self.load_state()
+        state2 = TfStateDiff(other_state_path).load_state()
+        res1 = self.extract_resources(state1)
+        res2 = self.extract_resources(state2)
+        diff = DeepDiff(res1, res2, ignore_order=True, exclude_regex_paths=r".*\.id$")
+        return diff
 
