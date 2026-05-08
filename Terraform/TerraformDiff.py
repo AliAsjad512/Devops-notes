@@ -47,4 +47,13 @@ class TfStateDiff:
                 lines.append(f"    Old: {change.get('old_value')}")
                 lines.append(f"    New: {change.get('new_value')}")
         return '\n'.join(lines)
+    def send_slack_notification(self, webhook_url, diff_text, env1, env2):
+        message = {
+            'text': f"Terraform State Diff between {env1} and {env2}",
+            'blocks': [{
+                'type': 'section',
+                'text': {'type': 'mrkdwn', 'text': f"```{diff_text[:3000]}```"}
+            }]
+        }
+        requests.post(webhook_url, json=message)
 
