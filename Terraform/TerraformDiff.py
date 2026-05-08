@@ -30,4 +30,21 @@ class TfStateDiff:
         res2 = self.extract_resources(state2)
         diff = DeepDiff(res1, res2, ignore_order=True, exclude_regex_paths=r".*\.id$")
         return diff
+    def format_diff(self, diff):
+        lines = []
+        if 'dictionary_item_added' in diff:
+            lines.append("➕ Resources added:")
+            for item in diff['dictionary_item_added']:
+                lines.append(f"  - {item}")
+        if 'dictionary_item_removed' in diff:
+            lines.append("➖ Resources removed:")
+            for item in diff['dictionary_item_removed']:
+                lines.append(f"  - {item}")
+        if 'values_changed' in diff:
+            lines.append("📝 Resources changed:")
+            for key, change in diff['values_changed'].items():
+                lines.append(f"  - {key}")
+                lines.append(f"    Old: {change.get('old_value')}")
+                lines.append(f"    New: {change.get('new_value')}")
+        return '\n'.join(lines)
 
