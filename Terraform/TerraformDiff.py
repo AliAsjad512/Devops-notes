@@ -57,3 +57,24 @@ class TfStateDiff:
         }
         requests.post(webhook_url, json=message)
 
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Terraform State Diff')
+    parser.add_argument('--state1', required=True)
+    parser.add_argument('--state2', required=True)
+    parser.add_argument('--env1', default='old')
+    parser.add_argument('--env2', default='new')
+    parser.add_argument('--slack-webhook', help='Slack webhook for notifications')
+    args = parser.parse_args()
+
+    differ = TfStateDiff(args.state1)
+    diff = differ.diff_with(args.state2)
+    if diff:
+        diff_text = differ.format_diff(diff)
+        print("⚠️ State differences found:")
+        print(diff_text)
+        if args.slack_webhook:
+            differ.send_slack_notification(args.slack_webhook, diff_text, args.env1, args.env2)
+    else:
+        print("✅ States are identical")
+
+
