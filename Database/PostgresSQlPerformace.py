@@ -51,3 +51,10 @@ class PGPerformance:
             WHERE NOT blocked_locks.granted
         """)
         return cur.fetchall()
+    def generate_report(self):
+        return {
+            'timestamp': datetime.utcnow().isoformat(),
+            'cache_hit_ratio': self.get_cache_hit_ratio(),
+            'top_slow_queries': self.get_top_slow_queries(),
+            'blocking_locks': self.get_blocking_locks()
+        }
