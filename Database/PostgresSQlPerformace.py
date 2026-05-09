@@ -58,3 +58,19 @@ class PGPerformance:
             'top_slow_queries': self.get_top_slow_queries(),
             'blocking_locks': self.get_blocking_locks()
         }
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='PostgreSQL Performance Insights')
+    parser.add_argument('--host', required=True)
+    parser.add_argument('--port', type=int, default=5432)
+    parser.add_argument('--user', required=True)
+    parser.add_argument('--password', required=True)
+    parser.add_argument('--database', required=True)
+    parser.add_argument('--output', default='pg_perf_report.json')
+    args = parser.parse_args()
+
+    perf = PGPerformance(args.host, args.port, args.user, args.password, args.database)
+    report = perf.generate_report()
+    with open(args.output, 'w') as f:
+        json.dump(report, f, indent=2, default=str)
+    print(f"✅ Report saved to {args.output}")
+    print(f"Cache hit ratio: {report['cache_hit_ratio']:.2f}%")
