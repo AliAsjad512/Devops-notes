@@ -34,3 +34,9 @@ from urllib.parse import urljoin
                     'destination': app['spec']['destination']
                 })
         return out_of_sync
+    def sync_app(self, app_name, revision='HEAD', dry_run=False):
+        url = urljoin(self.server_url, f'/api/v1/applications/{app_name}/sync')
+        payload = {'revision': revision, 'dryRun': dry_run, 'prune': True, 'strategy': {'force': False}}
+        resp = requests.post(url, headers=self.headers, json=payload, verify=self.verify)
+        resp.raise_for_status()
+        return resp.json()
