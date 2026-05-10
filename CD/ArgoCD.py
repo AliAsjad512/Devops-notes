@@ -19,3 +19,18 @@ from urllib.parse import urljoin
         resp = requests.get(url, headers=self.headers, verify=self.verify)
         resp.raise_for_status()
         return resp.json()
+      def get_out_of_sync_apps(self):
+        apps = self.list_applications()
+        out_of_sync = []
+        for app in apps:
+            status = app.get('status', {})
+            sync_status = status.get('sync', {}).get('status', '')
+            health_status = status.get('health', {}).get('status', '')
+            if sync_status != 'Synced' or health_status != 'Healthy':
+                out_of_sync.append({
+                    'name': app['metadata']['name'],
+                    'sync_status': sync_status,
+                    'health_status': health_status,
+                    'destination': app['spec']['destination']
+                })
+        return out_of_sync
