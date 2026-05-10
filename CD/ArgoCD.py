@@ -14,3 +14,8 @@ from urllib.parse import urljoin
         resp = requests.get(url, headers=self.headers, verify=self.verify)
         resp.raise_for_status()
         return resp.json().get('items', [])
+    def get_app_status(self, app_name):
+        url = urljoin(self.server_url, f'/api/v1/applications/{app_name}')
+        resp = requests.get(url, headers=self.headers, verify=self.verify)
+        resp.raise_for_status()
+        return resp.json()
