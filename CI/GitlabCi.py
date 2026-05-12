@@ -31,3 +31,13 @@ if __name__ == '__main__':
     parser.add_argument('--var', nargs='*', help='Variables as KEY=VALUE')
     parser.add_argument('--wait', action='store_true', help='Wait for completion')
     args = parser.parse_args()
+    variables = {}
+    if args.var:
+        for v in args.var:
+            key, val = v.split('=', 1)
+            variables[key] = val
+
+    trigger = GitLabPipelineTrigger(args.project, args.token)
+    result = trigger.trigger(args.ref, variables)
+    if result and args.wait:
+        import time
