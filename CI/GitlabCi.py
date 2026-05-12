@@ -19,3 +19,7 @@ class GitLabPipelineTrigger:
         else:
             print(f"❌ Failed: {resp.text}")
             return None
+    def get_pipeline_status(self, pipeline_id):
+        url = f"{self.url.replace('/trigger/pipeline', '')}/pipelines/{pipeline_id}"
+        resp = requests.get(url, headers={'PRIVATE-TOKEN': self.token})
+        return resp.json().get('status')
