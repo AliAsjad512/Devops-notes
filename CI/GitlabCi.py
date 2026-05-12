@@ -41,3 +41,11 @@ if __name__ == '__main__':
     result = trigger.trigger(args.ref, variables)
     if result and args.wait:
         import time
+    pipeline_id = result['id']
+        while True:
+            status = trigger.get_pipeline_status(pipeline_id)
+            print(f"Status: {status}")
+            if status in ('success', 'failed', 'canceled'):
+                break
+            time.sleep(5)
+        sys.exit(0 if status == 'success' else 1)
