@@ -23,3 +23,11 @@ class GitLabPipelineTrigger:
         url = f"{self.url.replace('/trigger/pipeline', '')}/pipelines/{pipeline_id}"
         resp = requests.get(url, headers={'PRIVATE-TOKEN': self.token})
         return resp.json().get('status')
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='GitLab CI Pipeline Trigger')
+    parser.add_argument('--project', required=True, help='GitLab project ID')
+    parser.add_argument('--token', required=True, help='Pipeline trigger token')
+    parser.add_argument('--ref', default='main')
+    parser.add_argument('--var', nargs='*', help='Variables as KEY=VALUE')
+    parser.add_argument('--wait', action='store_true', help='Wait for completion')
+    args = parser.parse_args()
