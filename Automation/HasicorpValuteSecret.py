@@ -24,4 +24,10 @@ class VaultSecretManager:
     def delete_secret(self, path, mount='secret'):
         self.client.secrets.kv.v2.delete_latest_version_of_secret(mount_point=mount, path=path)
         print(f"🗑️ Secret deleted from {mount}/{path}")
+    def list_secrets(self, path='', mount='secret'):
+        try:
+            resp = self.client.secrets.kv.v2.list_secrets(mount_point=mount, path=path)
+            return resp['data']['keys']
+        except:
+            return []
 
