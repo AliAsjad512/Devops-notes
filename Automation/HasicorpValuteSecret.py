@@ -11,3 +11,6 @@ class VaultSecretManager:
                 self.client.auth.approle.login(role_id=role_id, secret_id=secret_id)
             else:
                 raise Exception("Authentication failed")
+    def write_secret(self, path, data, mount='secret'):
+        self.client.secrets.kv.v2.create_or_update_secret(mount_point=mount, path=path, secret=data)
+        print(f"✅ Secret written to {mount}/{path}")
