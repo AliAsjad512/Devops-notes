@@ -21,3 +21,7 @@ class VaultSecretManager:
         except hvac.exceptions.InvalidPath:
             print(f"❌ Secret not found at {mount}/{path}")
             return None
+    def delete_secret(self, path, mount='secret'):
+        self.client.secrets.kv.v2.delete_latest_version_of_secret(mount_point=mount, path=path)
+        print(f"🗑️ Secret deleted from {mount}/{path}")
+
