@@ -14,3 +14,10 @@ class VaultSecretManager:
     def write_secret(self, path, data, mount='secret'):
         self.client.secrets.kv.v2.create_or_update_secret(mount_point=mount, path=path, secret=data)
         print(f"✅ Secret written to {mount}/{path}")
+    def read_secret(self, path, mount='secret'):
+        try:
+            resp = self.client.secrets.kv.v2.read_secret_version(mount_point=mount, path=path)
+            return resp['data']['data']
+        except hvac.exceptions.InvalidPath:
+            print(f"❌ Secret not found at {mount}/{path}")
+            return None
