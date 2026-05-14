@@ -15,3 +15,7 @@ import json
         resp = requests.get(f"{self.addr}/v1/job/{job_id}")
         resp.raise_for_status()
         return resp.json()
+    def get_allocations(self, job_id):
+        resp = requests.get(f"{self.addr}/v1/job/{job_id}/allocations")
+        resp.raise_for_status()
+        return resp.json()
