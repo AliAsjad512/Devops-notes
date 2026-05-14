@@ -10,3 +10,8 @@ import json
         resp = requests.get(f"{self.addr}/v1/jobs")
         resp.raise_for_status()
         return resp.json()
+    
+    def get_job_status(self, job_id):
+        resp = requests.get(f"{self.addr}/v1/job/{job_id}")
+        resp.raise_for_status()
+        return resp.json()
