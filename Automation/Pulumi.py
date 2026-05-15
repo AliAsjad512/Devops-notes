@@ -34,3 +34,13 @@ from pathlib import Path
         else:
             print(f"Deployment failed: {err}", file=sys.stderr)
         return returncode
+    def destroy(self, yes=True):
+        cmd = ['destroy', '--stack', self.stack_name]
+        if yes:
+            cmd.append('--yes')
+        returncode, out, err = self.run_cmd(cmd)
+        if returncode == 0:
+            print("✅ Stack destroyed")
+        else:
+            print(f"Destroy failed: {err}", file=sys.stderr)
+        return returncode
