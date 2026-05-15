@@ -44,3 +44,11 @@ from pathlib import Path
         else:
             print(f"Destroy failed: {err}", file=sys.stderr)
         return returncode
+    def show_outputs(self):
+        cmd = ['stack', 'output', '--stack', self.stack_name, '--json']
+        returncode, out, err = self.run_cmd(cmd)
+        if returncode == 0 and out:
+            outputs = json.loads(out)
+            print("Stack outputs:")
+            for k, v in outputs.items():
+                print(f"  {k}: {v}")
