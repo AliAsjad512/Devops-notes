@@ -12,3 +12,13 @@ from pathlib import Path
         full_cmd = ['pulumi', '--cwd', str(self.work_dir)] + cmd
         result = subprocess.run(full_cmd, capture_output=True, text=True)
         return result.returncode, result.stdout, result.stderr
+    def preview(self, diff=True):
+        cmd = ['preview', '--stack', self.stack_name]
+        if not diff:
+            cmd.append('--diff='
+        returncode, out, err = self.run_cmd(cmd)
+        if returncode == 0:
+            print(out)
+        else:
+            print(f"Preview failed: {err}", file=sys.stderr)
+        return returncode
