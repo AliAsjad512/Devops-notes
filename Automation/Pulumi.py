@@ -56,3 +56,21 @@ from pathlib import Path
         cmd = ['refresh', '--stack', self.stack_name, '--yes']
         returncode, out, err = self.run_cmd(cmd)
         return returncode
+
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Pulumi Stack Manager')
+    parser.add_argument('--stack', required=True)
+    parser.add_argument('--dir', default='.')
+    parser.add_argument('--action', choices=['preview', 'up', 'destroy', 'refresh'], required=True)
+    parser.add_argument('--skip-confirm', action='store_true')
+    args = parser.parse_args()
+
+    mgr = PulumiManager(args.stack, args.dir)
+    if args.action == 'preview':
+        sys.exit(mgr.preview())
+    elif args.action == 'up':
+        sys.exit(mgr.up(not args.skip_confirm))
+    elif args.action == 'destroy':
+        sys.exit(mgr.destroy(not args.skip_confirm))
+    elif args.action == 'refresh':
+        sys.exit(mgr.refresh())
