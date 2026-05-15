@@ -22,3 +22,15 @@ from pathlib import Path
         else:
             print(f"Preview failed: {err}", file=sys.stderr)
         return returncode
+     def up(self, yes=True):
+        cmd = ['up', '--stack', self.stack_name]
+        if yes:
+            cmd.append('--yes')
+        returncode, out, err = self.run_cmd(cmd)
+        if returncode == 0:
+            print("✅ Deployment succeeded")
+            # Extract outputs
+            self.show_outputs()
+        else:
+            print(f"Deployment failed: {err}", file=sys.stderr)
+        return returncode
