@@ -52,3 +52,7 @@ from pathlib import Path
             print("Stack outputs:")
             for k, v in outputs.items():
                 print(f"  {k}: {v}")
+     def refresh(self):
+        cmd = ['refresh', '--stack', self.stack_name, '--yes']
+        returncode, out, err = self.run_cmd(cmd)
+        return returncode
