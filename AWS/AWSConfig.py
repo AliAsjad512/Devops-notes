@@ -28,3 +28,15 @@ import json
                 'annotation': evaluation.get('Annotation', '')
             })
         return resources
+    def evaluate_custom_rule(self, rule_name, resource_type, resource_id, compliance_type):
+        """Manually evaluate a resource against a custom rule"""
+        response = self.config.put_evaluations(
+            Evaluations=[{
+                'ComplianceResourceType': resource_type,
+                'ComplianceResourceId': resource_id,
+                'ComplianceType': compliance_type,
+                'Annotation': f"Manual evaluation at {datetime.utcnow()}"
+            }],
+            ResultToken='manual'
+        )
+        return response['FailedEvaluations'] == []
