@@ -40,3 +40,25 @@ import json
             ResultToken='manual'
         )
         return response['FailedEvaluations'] == []
+    
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='AWS Config Rule Evaluator')
+    parser.add_argument('--region', default='us-east-1')
+    parser.add_argument('--action', choices=['summary', 'details'], default='summary')
+    parser.add_argument('--rule', help='Config rule name for details')
+    args = parser.parse_args()
+
+    evaluator = ConfigRuleEvaluator(args.region)
+    if args.action == 'summary':
+        summary = evaluator.get_compliance_summary()
+        print("Config rule compliance summary:")
+        for rule in summary:
+            print(f"  {rule['rule_name']}: {rule['compliance']}")
+    else:
+        if not args.rule:
+            print("❌ --rule required for details")
+            exit(1)
+        non_compliant = evaluator.get_non_compliant_resources(args.rule)
+        print(f"Non-compliant resources for rule {args.rule}:")
+        for res in non_compliant:
+            print(f"  - {res['resource_type']}/{res['resource_id']}: {res['annotation']}")
