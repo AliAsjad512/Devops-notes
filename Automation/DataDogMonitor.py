@@ -14,3 +14,7 @@ class DatadogMonitorManager:
             'DD-APPLICATION-KEY': self.app_key,
             'Content-Type': 'application/json'
         }
+    def list_monitors(self):
+        resp = requests.get(f'{self.base_url}/monitor', headers=self._headers())
+        resp.raise_for_status()
+        return resp.json()
