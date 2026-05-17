@@ -30,3 +30,9 @@ class DatadogMonitorManager:
         resp.raise_for_status()
         print(f"✅ Monitor created: {resp.json()['id']}")
         return resp.json()
+     def mute_monitor(self, monitor_id, scope=None):
+        url = f'{self.base_url}/monitor/{monitor_id}/mute'
+        payload = scope and {'scope': scope} or {}
+        resp = requests.post(url, headers=self._headers(), json=payload)
+        resp.raise_for_status()
+        print(f"✅ Monitor {monitor_id} muted")
