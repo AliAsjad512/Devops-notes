@@ -18,3 +18,15 @@ class DatadogMonitorManager:
         resp = requests.get(f'{self.base_url}/monitor', headers=self._headers())
         resp.raise_for_status()
         return resp.json()
+    def create_monitor(self, name, query, type='metric alert', message='Alert triggered', options=None):
+        payload = {
+            'name': name,
+            'type': type,
+            'query': query,
+            'message': message,
+            'options': options or {'thresholds': {'critical': 80}}
+        }
+        resp = requests.post(f'{self.base_url}/monitor', headers=self._headers(), json=payload)
+        resp.raise_for_status()
+        print(f"✅ Monitor created: {resp.json()['id']}")
+        return resp.json()
