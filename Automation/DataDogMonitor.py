@@ -36,3 +36,7 @@ class DatadogMonitorManager:
         resp = requests.post(url, headers=self._headers(), json=payload)
         resp.raise_for_status()
         print(f"✅ Monitor {monitor_id} muted")
+    def delete_monitor(self, monitor_id):
+        resp = requests.delete(f'{self.base_url}/monitor/{monitor_id}', headers=self._headers())
+        resp.raise_for_status()
+        print(f"🗑️ Monitor {monitor_id} deleted")
