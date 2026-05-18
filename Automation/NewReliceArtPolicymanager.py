@@ -57,5 +57,27 @@ class NewRelicAlertManager:
         """
         result = self._graphql_request(mutation, {'accountId': int(self.account_id), 'id': int(policy_id)})
         return result['data']['alertsPolicyDelete']
+    
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='New Relic Alert Manager')
+    parser.add_argument('--api-key', required=True)
+    parser.add_argument('--account-id', required=True)
+    parser.add_argument('--action', choices=['list', 'create', 'delete'], required=True)
+    parser.add_argument('--name', help='Policy name')
+    parser.add_argument('--policy-id', help='Policy ID for delete')
+    args = parser.parse_args()
+
+    manager = NewRelicAlertManager(args.api_key, args.account_id)
+    if args.action == 'list':
+        policies = manager.list_policies()
+        for p in policies:
+            print(f"{p['id']}: {p['name']}")
+    elif args.action == 'create':
+        policy = manager.create_policy(args.name)
+        print(f"✅ Created policy: {policy['id']} - {policy['name']}")
+    elif args.action == 'delete':
+        manager.delete_policy(args.policy_id)
+        print(f"🗑️ Deleted policy {args.policy_id}")
+
 
 
