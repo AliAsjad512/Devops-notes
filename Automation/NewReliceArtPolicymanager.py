@@ -34,3 +34,17 @@ class NewRelicAlertManager:
         result = self._graphql_request(query, {'accountId': int(self.account_id)})
         policies = result['data']['actor']['account']['alerts']['policiesSearch']['policies']
         return policies
+    
+    def create_policy(self, name, incident_preference='PER_POLICY'):
+        mutation = """
+        mutation ($accountId: Int!, $name: String!, $incidentPreference: AlertPolicyIncidentPreference!) {
+          alertsPolicyCreate(accountId: $accountId, name: $name, incidentPreference: $incidentPreference) {
+            id
+            name
+          }
+        }
+        """
+        vars = {'accountId': int(self.account_id), 'name': name, 'incidentPreference': incident_preference}
+        result = self._graphql_request(mutation, vars)
+        return result['data']['alertsPolicyCreate']
+
