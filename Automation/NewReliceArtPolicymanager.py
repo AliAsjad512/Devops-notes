@@ -13,3 +13,24 @@ class NewRelicAlertManager:
         resp = requests.post(self.base_url, headers=headers, json=payload)
         resp.raise_for_status()
         return resp.json()
+    def list_policies(self):
+        query = """
+        query ($accountId: Int!) {
+          actor {
+            account(id: $accountId) {
+              alerts {
+                policiesSearch {
+                  policies {
+                    id
+                    name
+                    incidentPreference
+                  }
+                }
+              }
+            }
+          }
+        }
+        """
+        result = self._graphql_request(query, {'accountId': int(self.account_id)})
+        policies = result['data']['actor']['account']['alerts']['policiesSearch']['policies']
+        return policies
