@@ -47,4 +47,15 @@ class NewRelicAlertManager:
         vars = {'accountId': int(self.account_id), 'name': name, 'incidentPreference': incident_preference}
         result = self._graphql_request(mutation, vars)
         return result['data']['alertsPolicyCreate']
+    def delete_policy(self, policy_id):
+        mutation = """
+        mutation ($accountId: Int!, $id: Int!) {
+          alertsPolicyDelete(accountId: $accountId, id: $id) {
+            id
+          }
+        }
+        """
+        result = self._graphql_request(mutation, {'accountId': int(self.account_id), 'id': int(policy_id)})
+        return result['data']['alertsPolicyDelete']
+
 
