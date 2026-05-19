@@ -25,3 +25,18 @@ class SyslogServer:
     def __init__(self, host='0.0.0.0', port=514):
         self.host = host
         self.port = port
+
+         def run(self):
+        server = socketserver.UDPServer((self.host, self.port), SyslogHandler)
+        print(f"Listening on {self.host}:{self.port}")
+        server.serve_forever()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Syslog to JSON Server')
+    parser.add_argument('--host', default='0.0.0.0')
+    parser.add_argument('--port', type=int, default=514)
+    args = parser.parse_args()
+
+    server = SyslogServer(args.host, args.port)
+    server.run()
