@@ -35,3 +35,17 @@ class RDSFailoverTester:
             time.sleep(5)
         print("❌ Failover timed out")
         return None
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='RDS Failover Tester')
+    parser.add_argument('--db-instance', required=True)
+    parser.add_argument('--region', default='us-east-1')
+    parser.add_argument('--monitor', action='store_true', help='Monitor after initiating')
+    args = parser.parse_args()
+
+    tester = RDSFailoverTester(args.region)
+    if args.monitor:
+        recovery_time = tester.monitor_failover(args.db_instance)
+        if recovery_time:
+            print(f"Recovery time: {recovery_time}s")
+    else:
+        tester.initiate_failover(args.db_instance)
