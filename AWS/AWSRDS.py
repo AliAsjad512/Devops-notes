@@ -14,3 +14,10 @@ class RDSFailoverTester:
             'endpoint': instance.get('Endpoint', {}).get('Address'),
             'multi_az': instance.get('MultiAZ', False)
         }
+    def initiate_failover(self, db_instance_id):
+        if not self.get_instance_status(db_instance_id)['multi_az']:
+            print("❌ Instance is not Multi-AZ. Failover not supported.")
+            return None
+        response = self.rds.failover_db_instance(DBInstanceIdentifier=db_instance_id)
+        print(f"🔄 Failover initiated for {db_instance_id}")
+        return response
