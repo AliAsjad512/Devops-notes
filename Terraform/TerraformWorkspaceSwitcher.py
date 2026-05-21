@@ -46,3 +46,25 @@ class TerraformWorkspace:
             pass  # Not straightforward; use `terraform workspace show`
         rc, out, err = self.run_cmd(['terraform', 'workspace', 'show'])
         return out.strip()
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Terraform Workspace Switcher')
+    parser.add_argument('--dir', default='.')
+    parser.add_argument('--action', choices=['list', 'create', 'select', 'delete', 'current'], required=True)
+    parser.add_argument('--name', help='Workspace name')
+    args = parser.parse_args()
+
+    ws = TerraformWorkspace(args.dir)
+    if args.action == 'list':
+        workspaces = ws.list_workspaces()
+        current = ws.current_workspace()
+        for w in workspaces:
+            marker = '*' if w == current else ' '
+            print(f"{marker} {w}")
+    elif args.action == 'create':
+        ws.create_workspace(args.name)
+    elif args.action == 'select':
+        ws.select_workspace(args.name)
+    elif args.action == 'delete':
+        ws.delete_workspace(args.name)
+    elif args.action == 'current':
+        print(ws.current_workspace())
