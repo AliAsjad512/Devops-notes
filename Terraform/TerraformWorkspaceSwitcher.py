@@ -25,3 +25,9 @@ class TerraformWorkspace:
             print(f"✅ Workspace '{name}' created")
         else:
             print(f"❌ {err}")
+    def select_workspace(self, name):
+        rc, out, err = self.run_cmd(['terraform', 'workspace', 'select', name])
+        if rc == 0:
+            print(f"✅ Switched to workspace '{name}'")
+        else:
+            print(f"❌ {err}")
