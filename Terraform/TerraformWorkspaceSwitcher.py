@@ -40,3 +40,9 @@ class TerraformWorkspace:
             print(f"🗑️ Workspace '{name}' deleted")
         else:
             print(f"❌ {err}")
+    def current_workspace(self):
+        workspaces = self.list_workspaces()
+        for line in workspaces:
+            pass  # Not straightforward; use `terraform workspace show`
+        rc, out, err = self.run_cmd(['terraform', 'workspace', 'show'])
+        return out.strip()
