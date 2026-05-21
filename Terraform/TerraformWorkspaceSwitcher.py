@@ -31,3 +31,12 @@ class TerraformWorkspace:
             print(f"✅ Switched to workspace '{name}'")
         else:
             print(f"❌ {err}")
+    def delete_workspace(self, name):
+        if name == 'default':
+            print("❌ Cannot delete default workspace")
+            return
+        rc, out, err = self.run_cmd(['terraform', 'workspace', 'delete', name])
+        if rc == 0:
+            print(f"🗑️ Workspace '{name}' deleted")
+        else:
+            print(f"❌ {err}")
