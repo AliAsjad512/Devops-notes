@@ -19,3 +19,9 @@ class TerraformWorkspace:
             if line:
                 workspaces.append(line.lstrip('* ').strip())
         return workspaces
+    def create_workspace(self, name):
+        rc, out, err = self.run_cmd(['terraform', 'workspace', 'new', name])
+        if rc == 0:
+            print(f"✅ Workspace '{name}' created")
+        else:
+            print(f"❌ {err}")
