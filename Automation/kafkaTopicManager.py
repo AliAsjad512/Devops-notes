@@ -22,3 +22,9 @@ class KafkaTopicManager:
             print(f"🗑️ Topic '{name}' deleted")
         except UnknownTopicOrPartitionError:
             print(f"❌ Topic '{name}' not found")
+    def get_topic_details(self, name):
+        try:
+            metadata = self.admin.describe_topics([name])
+            return metadata
+        except:
+            return None
