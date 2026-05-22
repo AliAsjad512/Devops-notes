@@ -16,3 +16,9 @@ class KafkaTopicManager:
             print(f"✅ Topic '{name}' created")
         except TopicAlreadyExistsError:
             print(f"⚠️ Topic '{name}' already exists")
+    def delete_topic(self, name):
+        try:
+            self.admin.delete_topics([name])
+            print(f"🗑️ Topic '{name}' deleted")
+        except UnknownTopicOrPartitionError:
+            print(f"❌ Topic '{name}' not found")
