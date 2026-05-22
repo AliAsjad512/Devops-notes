@@ -28,3 +28,24 @@ class KafkaTopicManager:
             return metadata
         except:
             return None
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Kafka Topic Manager')
+    parser.add_argument('--bootstrap', default='localhost:9092')
+    parser.add_argument('--action', choices=['list', 'create', 'delete', 'describe'], required=True)
+    parser.add_argument('--topic', help='Topic name')
+    parser.add_argument('--partitions', type=int, default=1)
+    parser.add_argument('--replication', type=int, default=1)
+    args = parser.parse_args()
+
+    manager = KafkaTopicManager(args.bootstrap)
+    if args.action == 'list':
+        topics = manager.list_topics()
+        for t in topics:
+            print(t)
+    elif args.action == 'create':
+        manager.create_topic(args.topic, args.partitions, args.replication)
+    elif args.action == 'delete':
+        manager.delete_topic(args.topic)
+    else:
+        details = manager.get_topic_details(args.topic)
+        print(details)
