@@ -28,3 +28,19 @@ class AWSManager:
     def tag_instance(self, instance_id, key, value):
         self.ec2.create_tags(Resources=[instance_id], Tags=[{'Key': key, 'Value': value}])
         print(f"Tagged {instance_id} with {key}={value}")
+
+    def launch_instance(self, ami, instance_type='t2.micro', key_name=None, security_group_ids=None):
+        params = {
+            'ImageId': ami,
+            'InstanceType': instance_type,
+            'MinCount': 1,
+            'MaxCount': 1
+        }
+        if key_name:
+            params['KeyName'] = key_name
+        if security_group_ids:
+            params['SecurityGroupIds'] = security_group_ids
+        resp = self.ec2.run_instances(**params)
+        instance_id = resp['Instances'][0]['InstanceId']
+        print(f"Launched instance {instance_id}")
+        return instance_id
