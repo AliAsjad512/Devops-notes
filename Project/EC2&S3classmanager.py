@@ -44,3 +44,21 @@ class AWSManager:
         instance_id = resp['Instances'][0]['InstanceId']
         print(f"Launched instance {instance_id}")
         return instance_id
+    def list_buckets(self):
+        buckets = self.s3.list_buckets().get('Buckets', [])
+        return [b['Name'] for b in buckets]
+
+    def create_bucket(self, bucket_name):
+        if self.region == 'us-east-1':
+            self.s3.create_bucket(Bucket=bucket_name)
+        else:
+            self.s3.create_bucket(Bucket=bucket_name, CreateBucketConfiguration={'LocationConstraint': self.region})
+        print(f"Bucket {bucket_name} created")
+
+    def delete_bucket(self, bucket_name):
+        # Delete all objects first (simple version)
+        objects = self.s3.list_objects_v2(Bucket=bucket_name).get('Contents', [])
+        for obj in objects:
+            self.s3.delete_object(Bucket=bucket_name, Key=obj['Key'])
+        self.s3.delete_bucket(Bucket=bucket_name)
+        print(f"Bucket {bucket_name} deleted")
