@@ -25,3 +25,6 @@ class AWSManager:
     def stop_instance(self, instance_id):
         self.ec2.stop_instances(InstanceIds=[instance_id])
         print(f"Stopping {instance_id}")
+    def tag_instance(self, instance_id, key, value):
+        self.ec2.create_tags(Resources=[instance_id], Tags=[{'Key': key, 'Value': value}])
+        print(f"Tagged {instance_id} with {key}={value}")
