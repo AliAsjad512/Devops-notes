@@ -19,3 +19,6 @@ class AWSManager:
                     'Name': next((tag['Value'] for tag in instance.get('Tags', []) if tag['Key'] == 'Name'), '')
                 })
         return instances
+    def start_instance(self, instance_id):
+        self.ec2.start_instances(InstanceIds=[instance_id])
+        print(f"Starting {instance_id}")
