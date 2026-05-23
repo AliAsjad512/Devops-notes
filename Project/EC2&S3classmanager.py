@@ -22,3 +22,6 @@ class AWSManager:
     def start_instance(self, instance_id):
         self.ec2.start_instances(InstanceIds=[instance_id])
         print(f"Starting {instance_id}")
+    def stop_instance(self, instance_id):
+        self.ec2.stop_instances(InstanceIds=[instance_id])
+        print(f"Stopping {instance_id}")
