@@ -65,3 +65,5 @@ class S3FargatePipeline:
     if task_arn:
         final_status = pipeline.wait_for_task(args.cluster, task_arn)
         print(f"Final status: {final_status}")
+ if __name__ == '__main__':
+    main()
