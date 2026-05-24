@@ -30,3 +30,13 @@ class S3FargatePipeline:
         task_arn = tasks[0]['taskArn']
         print(f"Started Fargate task: {task_arn}")
         return task_arn
+    def wait_for_task(self, cluster, task_arn, timeout=300):
+        start = time.time()
+        while time.time() - start < timeout:
+            resp = self.ecs.describe_tasks(cluster=cluster, tasks=[task_arn])
+            status = resp['tasks'][0]['lastStatus']
+            print(f"Task status: {status}")
+            if status in ('STOPPED', 'DEACTIVATING'):
+                break
+            time.sleep(5)
+        return status
