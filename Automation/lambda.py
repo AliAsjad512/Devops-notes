@@ -51,3 +51,17 @@ class S3FargatePipeline:
     parser.add_argument('--security-groups', nargs='+', required=True)
     parser.add_argument('--region', default='us-east-1')
     args = parser.parse_args()
+    pipeline = S3FargatePipeline(args.region)
+    pipeline.upload_file(args.bucket, args.key, args.file)
+
+    # Optionally pass S3 location as an environment variable override
+    overrides = {
+        'containerOverrides': [{
+            'name': 'processor',  # replace with your container name
+            'environment': [{'name': 'INPUT_S3_URI', 'value': f's3://{args.bucket}/{args.key}'}]
+        }]
+    }
+    task_arn = pipeline.run_fargate_task(args.cluster, args.task_definition, args.subnets, args.security_groups, overrides)
+    if task_arn:
+        final_status = pipeline.wait_for_task(args.cluster, task_arn)
+        print(f"Final status: {final_status}")
