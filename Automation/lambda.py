@@ -22,3 +22,11 @@ class S3FargatePipeline:
                 }
             },
             overrides=overrides or {}
+              )
+        tasks = response['tasks']
+        if not tasks:
+            print("Failed to start task:", response['failures'])
+            return None
+        task_arn = tasks[0]['taskArn']
+        print(f"Started Fargate task: {task_arn}")
+        return task_arn
