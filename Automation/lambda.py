@@ -40,3 +40,14 @@ class S3FargatePipeline:
                 break
             time.sleep(5)
         return status
+    def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--bucket', required=True)
+    parser.add_argument('--key', required=True)
+    parser.add_argument('--file', required=True)
+    parser.add_argument('--cluster', required=True)
+    parser.add_argument('--task-definition', required=True)
+    parser.add_argument('--subnets', nargs='+', required=True)
+    parser.add_argument('--security-groups', nargs='+', required=True)
+    parser.add_argument('--region', default='us-east-1')
+    args = parser.parse_args()
