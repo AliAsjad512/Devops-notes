@@ -9,3 +9,16 @@ class S3FargatePipeline:
     def upload_file(self, bucket, key, local_path):
         self.s3.upload_file(local_path, bucket, key)
         print(f"Uploaded {local_path} to s3://{bucket}/{key}")
+    def run_fargate_task(self, cluster, task_definition, subnets, security_groups, overrides=None):
+        response = self.ecs.run_task(
+            cluster=cluster,
+            taskDefinition=task_definition,
+            launchType='FARGATE',
+            networkConfiguration={
+                'awsvpcConfiguration': {
+                    'subnets': subnets,
+                    'securityGroups': security_groups,
+                    'assignPublicIp': 'ENABLED'
+                }
+            },
+            overrides=overrides or {}
