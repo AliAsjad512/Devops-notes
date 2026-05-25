@@ -26,3 +26,13 @@ class TerraformWrapper:
 
     def destroy(self, vars=None):
         return self.run('destroy', vars)
+    def output(self, output_name=None):
+        cmd = ['terraform', 'output', '-json']
+        result = subprocess.run(cmd, cwd=self.working_dir, capture_output=True, text=True)
+        if result.returncode == 0:
+            outputs = json.loads(result.stdout)
+            if output_name:
+                print(outputs.get(output_name, {}).get('value', 'Not found'))
+            else:
+                print(json.dumps(outputs, indent=2))
+        return result.returncode
