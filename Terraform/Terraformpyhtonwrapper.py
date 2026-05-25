@@ -18,3 +18,11 @@ class TerraformWrapper:
         if result.stderr:
             print(result.stderr, file=sys.stderr)
         return result.returncode
+    def plan(self, vars=None):
+        return self.run('plan', vars)
+
+    def apply(self, vars=None):
+        return self.run('apply', vars)
+
+    def destroy(self, vars=None):
+        return self.run('destroy', vars)
