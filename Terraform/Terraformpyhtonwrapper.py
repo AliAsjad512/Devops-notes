@@ -36,3 +36,31 @@ class TerraformWrapper:
             else:
                 print(json.dumps(outputs, indent=2))
         return result.returncode
+    def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dir', default='.', help='Terraform working directory')
+    parser.add_argument('--action', choices=['plan', 'apply', 'destroy', 'output'], required=True)
+    parser.add_argument('--var', nargs='*', help='Variable assignments (key=value)')
+    parser.add_argument('--output-name', help='Specific output name')
+    args = parser.parse_args()
+
+    vars_dict = {}
+    if args.var:
+        for item in args.var:
+            key, val = item.split('=', 1)
+            vars_dict[key] = val
+
+    tf = TerraformWrapper(args.dir)
+    if args.action == 'plan':
+        rc = tf.plan(vars_dict)
+    elif args.action == 'apply':
+        rc = tf.apply(vars_dict)
+    elif args.action == 'destroy':
+        rc = tf.destroy(vars_dict)
+    else:
+        rc = tf.output(args.output_name)
+
+    sys.exit(rc)
+
+if __name__ == '__main__':
+    main()
