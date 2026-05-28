@@ -32,3 +32,7 @@ policy = {
     }
     s3.put_bucket_policy(Bucket=bucket_name, Policy=json.dumps(policy))
     print("Bucket policy set to public read.")
+  if not content:
+        content = """<html><body><h1>Hello from S3!</h1><p>This is a static website hosted on AWS S3.</p></body></html>"""
+    s3.put_object(Bucket=bucket_name, Key=index_file, Body=content, ContentType='text/html')
+    print(f"Uploaded {index_file}")
