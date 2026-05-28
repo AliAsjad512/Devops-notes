@@ -10,3 +10,12 @@ def create_static_website(bucket_name, region='us-east-1', index_file='index.htm
         s3.create_bucket(Bucket=bucket_name,
                          CreateBucketConfiguration={'LocationConstraint': region})
     print(f"Bucket '{bucket_name}' created.")
+
+ s3.put_bucket_website(
+        Bucket=bucket_name,
+        WebsiteConfiguration={
+            'IndexDocument': {'Suffix': index_file},
+            'ErrorDocument': {'Key': 'error.html'}
+        }
+    )
+    print("Static website hosting enabled.")
