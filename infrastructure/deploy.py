@@ -17,3 +17,17 @@ def create_word_counter_stack(bucket_name, function_name, topic_name):
     if response:
         sns.subscribe(TopicArn=topic_arn, Protocol='email', Endpoint=response)
         print(f"Subscription request sent to {response}. Confirm via email.")
+     assume_role_policy = {
+        "Version": "2012-10-17",
+        "Statement": [{
+            "Effect": "Allow",
+            "Principal": {"Service": "lambda.amazonaws.com"},
+            "Action": "sts:AssumeRole"
+        }]
+    }
+    role_name = f"{function_name}_role"
+    role = iam.create_role(RoleName=role_name, AssumeRolePolicyDocument=json.dumps(assume_role_policy))
+    # Attach policies
+    iam.attach_role_policy(RoleName=role_name, PolicyArn='arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole')
+    iam.attach_role_policy(RoleName=role_name, PolicyArn='arn:aws:iam::aws:policy/AmazonSNSFullAccess')
+    iam.attach_role_policy(RoleName=role_name, PolicyArn='arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess')
