@@ -40,3 +40,41 @@ def create_word_counter_stack(bucket_name, function_name, topic_name):
 
     with open('lambda.zip', 'rb') as f:
         zip_data = f.read()
+   # 4. Create Lambda function
+    lambda_client.create_function(
+        FunctionName=function_name,
+        Runtime='python3.9',
+        Role=role['Role']['Arn'],
+        Handler='lambda_function.lambda_handler',
+        Code={'ZipFile': zip_data},
+        Environment={'Variables': {'SNS_TOPIC_ARN': topic_arn}}
+    )
+    print(f"Lambda function '{function_name}' created.")
+
+    # 5. Create S3 bucket for file uploads
+    s3.create_bucket(Bucket=bucket_name, CreateBucketConfiguration={'LocationConstraint': 'us-east-1'})
+    print(f"S3 bucket '{bucket_name}' created.")
+
+    # 6. Add S3 bucket notification to trigger Lambda
+    lambda_arn = lambda_client.get_function(FunctionName=function_name)['Configuration']['FunctionArn']
+    # Grant S3 invoke permission
+    lambda_client.add_permission(
+        FunctionName=function_name,
+        StatementId='s3invoke',
+        Action='lambda:InvokeFunction',
+        Principal='s3.amazonaws.com',
+        SourceArn=f'arn:aws:s3:::{bucket_name}'
+    )
+    notification = {
+        'LambdaFunctionConfigurations': [{
+            'Id': 'word-counter-trigger',
+            'LambdaFunctionArn': lambda_arn,
+            'Events': ['s3:ObjectCreated:*']
+        }]
+    }
+    s3.put_bucket_notification_configuration(Bucket=bucket_name, NotificationConfiguration=notification)
+    print("S3 event notification configured.")
+
+    print("\n✅ Deployment complete!")
+    print(f"Upload a .txt file to s3://{bucket_name} to trigger the word counter.")
+    print(f"You will receive an email (if subscribed) with the word count.")
