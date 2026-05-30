@@ -31,3 +31,12 @@ def create_word_counter_stack(bucket_name, function_name, topic_name):
     iam.attach_role_policy(RoleName=role_name, PolicyArn='arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole')
     iam.attach_role_policy(RoleName=role_name, PolicyArn='arn:aws:iam::aws:policy/AmazonSNSFullAccess')
     iam.attach_role_policy(RoleName=role_name, PolicyArn='arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess')
+
+     time.sleep(10)
+
+    # 3. Package Lambda code
+    with zipfile.ZipFile('lambda.zip', 'w') as z:
+        z.write('lambda_function.py')
+
+    with open('lambda.zip', 'rb') as f:
+        zip_data = f.read()
