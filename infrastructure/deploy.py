@@ -78,3 +78,13 @@ def create_word_counter_stack(bucket_name, function_name, topic_name):
     print("\n✅ Deployment complete!")
     print(f"Upload a .txt file to s3://{bucket_name} to trigger the word counter.")
     print(f"You will receive an email (if subscribed) with the word count.")
+
+    if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--bucket', required=True, help='S3 bucket name for file uploads')
+    parser.add_argument('--lambda-name', default='wordcounter', help='Lambda function name')
+    parser.add_argument('--topic-name', default='wordcount-topic', help='SNS topic name')
+    args = parser.parse_args()
+
+    create_word_counter_stack(args.bucket, args.lambda_name, args.topic_name)
