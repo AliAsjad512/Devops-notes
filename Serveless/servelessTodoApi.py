@@ -38,3 +38,16 @@ def lambda_handler(event, context):
     if not item:
         return response(404, {'error': 'Not found'})
     return response(200, item)
+   
+   def create(body):
+    todo_id = str(uuid4())
+    now = datetime.utcnow().isoformat()
+    item = {
+        'id': todo_id,
+        'title': body.get('title'),
+        'completed': body.get('completed', False),
+        'createdAt': now,
+        'updatedAt': now
+    }
+    table.put_item(Item=item)
+    return response(201, item)
