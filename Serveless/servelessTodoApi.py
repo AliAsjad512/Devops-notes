@@ -68,3 +68,6 @@ def lambda_handler(event, context):
         ExpressionAttributeValues=expr_values
     )
     return response(200, {'message': 'Updated'})
+    def delete(todo_id):
+    table.delete_item(Key={'id': todo_id})
+    return response(200, {'message': 'Deleted'})
