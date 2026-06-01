@@ -71,3 +71,10 @@ def lambda_handler(event, context):
     def delete(todo_id):
     table.delete_item(Key={'id': todo_id})
     return response(200, {'message': 'Deleted'})
+
+    def response(status_code, body):
+    return {
+        'statusCode': status_code,
+        'headers': {'Content-Type': 'application/json'},
+        'body': json.dumps(body)
+    }
