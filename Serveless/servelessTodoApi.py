@@ -32,3 +32,9 @@ def lambda_handler(event, context):
     def get_all():
     result = table.scan()
     return response(200, result.get('Items', []))
+    
+    def get_one(todo_id):
+    item = table.get_item(Key={'id': todo_id}).get('Item')
+    if not item:
+        return response(404, {'error': 'Not found'})
+    return response(200, item)
