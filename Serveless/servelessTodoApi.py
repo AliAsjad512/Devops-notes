@@ -6,3 +6,25 @@ from datetime import datetime
 dynamodb = boto3.resource('dynamodb')
 table_name = os.environ['TABLE_NAME']
 table = dynamodb.Table(table_name)
+
+def lambda_handler(event, context):
+    method = event['httpMethod']
+    path = event['path']
+    
+    if method == 'GET' and path == '/todos':
+        return get_all()
+    elif method == 'GET' and path.startswith('/todos/'):
+        todo_id = path.split('/')[-1]
+        return get_one(todo_id)
+    elif method == 'POST' and path == '/todos':
+        body = json.loads(event['body'])
+        return create(body)
+    elif method == 'PUT' and path.startswith('/todos/'):
+        todo_id = path.split('/')[-1]
+        body = json.loads(event['body'])
+        return update(todo_id, body)
+    elif method == 'DELETE' and path.startswith('/todos/'):
+        todo_id = path.split('/')[-1]
+        return delete(todo_id)
+    else:
+        return response(404, {'error': 'Not found'})
