@@ -28,3 +28,7 @@ def lambda_handler(event, context):
         return delete(todo_id)
     else:
         return response(404, {'error': 'Not found'})
+    
+    def get_all():
+    result = table.scan()
+    return response(200, result.get('Items', []))
