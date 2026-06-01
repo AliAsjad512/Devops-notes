@@ -51,3 +51,20 @@ def lambda_handler(event, context):
     }
     table.put_item(Item=item)
     return response(201, item)
+
+    def update(todo_id, body):
+    now = datetime.utcnow().isoformat()
+    update_expr = "SET #title = :title, completed = :completed, updatedAt = :updatedAt"
+    expr_names = {'#title': 'title'}
+    expr_values = {
+        ':title': body.get('title'),
+        ':completed': body.get('completed', False),
+        ':updatedAt': now
+    }
+    table.update_item(
+        Key={'id': todo_id},
+        UpdateExpression=update_expr,
+        ExpressionAttributeNames=expr_names,
+        ExpressionAttributeValues=expr_values
+    )
+    return response(200, {'message': 'Updated'})
