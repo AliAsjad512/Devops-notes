@@ -29,3 +29,6 @@ class RDSBackupCopier:
         except Exception as e:
             print(f"Error copying {snapshot_id}: {e}")
             return None
+        def get_account_id(self):
+        sts = boto3.client('sts')
+        return sts.get_caller_identity()['Account']
