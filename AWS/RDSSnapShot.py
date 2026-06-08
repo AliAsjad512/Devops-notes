@@ -16,3 +16,16 @@ class RDSBackupCopier:
         snapshots = self.source.describe_db_snapshots(SnapshotType='manual')['DBSnapshots']
         recent = [s for s in snapshots if s['SnapshotCreateTime'].replace(tzinfo=None) > cutoff]
         return recent
+    def copy_snapshot(self, snapshot_id, target_snapshot_id):
+        """Copy a snapshot to the target region."""
+        try:
+            response = self.target.copy_db_snapshot(
+                SourceDBSnapshotIdentifier=f'arn:aws:rds:{self.source_region}:{self.get_account_id()}:snapshot:{snapshot_id}',
+                TargetDBSnapshotIdentifier=target_snapshot_id,
+                CopyTags=True
+            )
+            print(f"Copy initiated: {target_snapshot_id}")
+            return response['DBSnapshot']['DBSnapshotArn']
+        except Exception as e:
+            print(f"Error copying {snapshot_id}: {e}")
+            return None
