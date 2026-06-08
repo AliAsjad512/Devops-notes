@@ -44,3 +44,14 @@ class RDSBackupCopier:
             else:
                 self.copy_snapshot(source_id, target_id)
                 time.sleep(1)  # avoid rate limits
+      if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--source-region', required=True)
+    parser.add_argument('--target-region', required=True)
+    parser.add_argument('--days', type=int, default=7)
+    parser.add_argument('--dry-run', action='store_true', default=True)
+    parser.add_argument('--execute', dest='dry_run', action='store_false')
+    args = parser.parse_args()
+
+    copier = RDSBackupCopier(args.source_region, args.target_region)
+    copier.run(days_back=args.days, dry_run=args.dry_run)
