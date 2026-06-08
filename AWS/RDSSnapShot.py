@@ -32,3 +32,15 @@ class RDSBackupCopier:
         def get_account_id(self):
         sts = boto3.client('sts')
         return sts.get_caller_identity()['Account']
+    
+      def run(self, days_back=7, dry_run=True):
+        snapshots = self.list_snapshots(days_back)
+        print(f"Found {len(snapshots)} snapshots from the last {days_back} days")
+        for snap in snapshots:
+            source_id = snap['DBSnapshotIdentifier']
+            target_id = f"{source_id}-copy"
+            if dry_run:
+                print(f"[DRY RUN] Would copy {source_id} to {self.target_region}:{target_id}")
+            else:
+                self.copy_snapshot(source_id, target_id)
+                time.sleep(1)  # avoid rate limits
