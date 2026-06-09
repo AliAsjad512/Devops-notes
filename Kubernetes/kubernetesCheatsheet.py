@@ -11,3 +11,15 @@ kubectl get all ==> overview of all resources on the cluster like pods, deployme
 kubectl options ==> Prints the kubectl command options that can be used with kubectl command.
 kubectl api-resources ==> Prints all the supported API resources on the server.
 kubectl api-versions ==> Prints all the supported API versions on the server.
+
+
+kubectl get namespaces ==> Lists all namespaces on the cluster.
+kubectl create namespace new-namespace ==> It will create a new namespace.
+kubectl config set-context --current --namespace=new-namespace ==> Set the default namespace as the new-namespace.
+kubectl delete namespace new-namespace ==> Delete the namespace.
+kubectl get pods ==> List pods in the default namespace.
+kubectl get pods -n namespace_name ==> List pods of a specific namespace.
+kubectl get pods --all-namespaces ==> Lists pods of all namespaces.
+kubectl get pods -o wide ==> Lists pods with more details.
+kubectl describe pod new-pod ==> More details of a pod.
+kubectl logs new-pod ==> Shares logs of a pod.
