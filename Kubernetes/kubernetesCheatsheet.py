@@ -23,3 +23,15 @@ kubectl get pods --all-namespaces ==> Lists pods of all namespaces.
 kubectl get pods -o wide ==> Lists pods with more details.
 kubectl describe pod new-pod ==> More details of a pod.
 kubectl logs new-pod ==> Shares logs of a pod.
+
+
+kubectl logs -f new-pod ==> Live or stream logs of a pod.
+kubectl exec -it <pod-name> -- /bin/bash ==> Access a pod using SSH.
+kubectl run new-pod --image=alpine:latest ==> Run a new pod with an image of your choice.
+kubectl delete pod new-pod ==> Delete a pod.
+kubectl get deployments ==> See deployments of a namespace.
+kubectl get deployments --all-namespaces ==> See all deployments in all namespaces.
+kubectl scale deployment deployment-name -n namespace-name --replicas=3 => Scale up a deployment upto 3 pods.
+kubectl delete deployment deployment-name ==> Delete a deployment.
+kubectl get services ==> List services in the default namespace.
+kubectl get services --all-namespaces ==> Services running in all namespaces.
