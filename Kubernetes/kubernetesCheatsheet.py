@@ -47,3 +47,15 @@ kubectl delete configmap my-configmap ==> Delete a configmap.
 kubectl get secrets ==> The secrets of our K8s cluster.
 kubectl get secrets --all-namespaces ==> Secrets in all namespaces of a cluster.
 kubectl create secret generic my-secret --from-literal=username=admin --from-literal=password=admin123 ==> It'll create a new secret.
+
+
+kubectl describe secret my-secret ==> Details of our secret.
+kubectl delete secret my-secret ==> It will delete the secret.
+kubectl delete all --all --namespace=my-namespace ==> It will delete all resources in "my-namespace".
+kubectl get pods --watch --all-namespaces ==> Continuously monitor the status of pods in all namespaces.
+kubectl get pods -A ==> See pods in all namespaces, instead of using --all-namespaces, we can use -A as well.
+kubectl get replicasets --all-namespaces ==> Replicasets in all namespaces.
+kubectl get daemonsets --all-namespaces ==> Daemonsets in all namespaces.
+kubectl get statefulsets --all-namespaces ==> Statefulsets in all namespaces.
+kubectl top nodes ==> Get resource utilization of nodes.
+kubectl top pods ==> Get resource utilization of pods.
