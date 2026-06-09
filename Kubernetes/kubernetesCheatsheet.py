@@ -35,3 +35,15 @@ kubectl scale deployment deployment-name -n namespace-name --replicas=3 => Scale
 kubectl delete deployment deployment-name ==> Delete a deployment.
 kubectl get services ==> List services in the default namespace.
 kubectl get services --all-namespaces ==> Services running in all namespaces.
+
+
+kubectl create service loadbalancer new-loadbalancer-service --tcp=80:8080 ==> It'll create a new loadbalancer service that exposes port 80 & routes traffic to container port 8080.
+kubectl describe service new-loadbalancer-service ==> Describes a service and shares more details.
+kubectl delete service new-loadbalancer-service ==> Deletes a service.
+kubectl get configmaps ==> Lists down configmaps of the default namespace.
+kubectl get configmaps --all-namespaces ==> Lists all Configmaps in all namespaces of the cluster.
+kubectl describe configmap my-configmap -n namespace ==> See the details of a configmap in a specific namespace.
+kubectl delete configmap my-configmap ==> Delete a configmap.
+kubectl get secrets ==> The secrets of our K8s cluster.
+kubectl get secrets --all-namespaces ==> Secrets in all namespaces of a cluster.
+kubectl create secret generic my-secret --from-literal=username=admin --from-literal=password=admin123 ==> It'll create a new secret.
