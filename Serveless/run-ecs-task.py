@@ -33,5 +33,14 @@ class ECSFargateRunner:
         if wait:
             self._wait(task_arn)
         return task_arn
+    
+       def _wait(self, task_arn):
+        while True:
+            resp = self.ecs.describe_tasks(cluster=self.cluster, tasks=[task_arn])
+            status = resp['tasks'][0]['lastStatus']
+            print(f"Status: {status}")
+            if status in ('STOPPED', 'DEACTIVATING'):
+                break
+            time.sleep(5)
 
 
