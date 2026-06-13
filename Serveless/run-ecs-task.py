@@ -44,3 +44,22 @@ class ECSFargateRunner:
             time.sleep(5)
 
 
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--cluster', required=True)
+    parser.add_argument('--task-def', required=True)
+    parser.add_argument('--subnets', nargs='+', required=True)
+    parser.add_argument('--sg', nargs='+', required=True)
+    parser.add_argument('--region', default='us-east-1')
+    parser.add_argument('--command', help='Override container command (JSON list, e.g. ["python","script.py"])')
+    parser.add_argument('--wait', action='store_true')
+    args = parser.parse_args()
+
+    overrides = {}
+    if args.command:
+        import json
+        overrides = {'containerOverrides': [{'name': 'my-container', 'command': json.loads(args.command)}]}
+    runner = ECSFargateRunner(args.cluster, args.task_def, args.region)
+    runner.run(args.subnets, args.sg, overrides, args.wait)
+
+
