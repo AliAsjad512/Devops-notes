@@ -20,3 +20,10 @@ class CloudFrontInvalidator:
         if wait:
             self._wait(invalidation_id)
         return invalidation_id
+    def _wait(self, inval_id):
+        while True:
+            status = self.cf.get_invalidation(DistributionId=self.dist_id, Id=inval_id)
+            if status['Invalidation']['Status'] == 'Completed':
+                print("Invalidation completed")
+                break
+            time.sleep(3)
