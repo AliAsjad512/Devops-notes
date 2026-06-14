@@ -27,3 +27,13 @@ class CloudFrontInvalidator:
                 print("Invalidation completed")
                 break
             time.sleep(3)
+
+            if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dist-id', required=True)
+    parser.add_argument('--paths', nargs='+', default=['/*'])
+    parser.add_argument('--wait', action='store_true')
+    args = parser.parse_args()
+
+    invalidator = CloudFrontInvalidator(args.dist_id)
+    invalidator.invalidate(args.paths, args.wait)
