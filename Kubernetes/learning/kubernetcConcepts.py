@@ -26,3 +26,6 @@ Runs inside a Node
 Contains one or more containers (e.g., your nginx container)
 Has its own IP address
 If a pod dies, Kubernetes restarts it
+
+
+Control Plane NodeWorker NodeRuns pods?❌✅Runs API Server?✅❌Also calledMaster NodeJust "Node"In MinikubeSame machineSame machine
