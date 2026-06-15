@@ -6,3 +6,6 @@ Controller Manager
 ├── Deployment Controller    → manages rollouts
 ├── Job Controller           → manages one-off jobs
 └── Namespace Controller     → manages namespaces
+
+
+"Remember when your container crashed and auto-healed? That was the Replication Controller detecting: Desired=3, Actual=2, Action=Create 1 pod!"
