@@ -22,3 +22,15 @@ class BackupManager:
                     # Tag snapshot
                     self.ec2.create_tags(Resources=[snap['SnapshotId']], Tags=[{'Key': 'Backup', 'Value': 'true'}])
                     print(f"Snapshot {snap['SnapshotId']} for {instance_id}")
+
+    def delete_old_snapshots(self, retention_days=30, dry_run=True):
+        cutoff = datetime.datetime.now() - datetime.timedelta(days=retention_days)
+        snapshots = self.ec2.describe_snapshots(OwnerIds=['self'])['Snapshots']
+        for snap in snapshots:
+            if snap['StartTime'].replace(tzinfo=None) < cutoff:
+                if dry_run:
+                    print(f"[DRY RUN] Would delete {snap['SnapshotId']}")
+                else:
+                    self.ec2.delete_snapshot(SnapshotId=snap['SnapshotId'])
+                    print(f"Deleted {snap['SnapshotId']}")
+
