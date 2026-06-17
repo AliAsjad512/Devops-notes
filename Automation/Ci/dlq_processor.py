@@ -10,3 +10,11 @@ sns_topic = os.environ.get('SNS_TOPIC_ARN', '')
 def lambda_handler(event, context):
     messages = event['Records']
     failures = []
+
+    for msg in messages:
+        body = msg['body']
+        # Process the dead letter (e.g., log to CloudWatch, send to S3, etc.)
+        print(f"DLQ message: {body}")
+        # Optionally send SNS alert
+        if sns_topic:
+            sns.publish(TopicArn=sns_topic, Message=f"DLQ message received: {body[:200]}", Subject="DLQ Alert")
