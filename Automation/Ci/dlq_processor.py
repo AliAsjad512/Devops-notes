@@ -18,3 +18,7 @@ def lambda_handler(event, context):
         # Optionally send SNS alert
         if sns_topic:
             sns.publish(TopicArn=sns_topic, Message=f"DLQ message received: {body[:200]}", Subject="DLQ Alert")
+ # Delete from DLQ after processing
+        receipt = msg['receiptHandle']
+        sqs.delete_message(QueueUrl=dlq_url, ReceiptHandle=receipt)
+    return {'statusCode': 200, 'processed': len(messages)}
