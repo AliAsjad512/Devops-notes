@@ -34,3 +34,18 @@ class BackupManager:
                     self.ec2.delete_snapshot(SnapshotId=snap['SnapshotId'])
                     print(f"Deleted {snap['SnapshotId']}")
 
+
+
+        if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--action', choices=['create', 'cleanup'], required=True)
+    parser.add_argument('--retention-days', type=int, default=30)
+    parser.add_argument('--dry-run', action='store_true')
+    args = parser.parse_args()
+
+    mgr = BackupManager()
+    if args.action == 'create':
+        mgr.create_snapshots(dry_run=args.dry_run)
+    else:
+        mgr.delete_old_snapshots(args.retention_days, args.dry_run)
+
