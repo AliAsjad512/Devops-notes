@@ -29,3 +29,18 @@ GitHub Actions
         ┌─────────────────────┐
         │  flask-app-dev      │    flask-app-prod      │
         │  2 pods (HPA: 2–6)  │    3 pods (HPA: 3–10)  │
+                                           
+
+                                           ech Stack
+Tool	Version	Purpose
+Python / Flask	3.11	Application
+Gunicorn	Latest	Production WSGI server
+Docker (multi-stage)	Latest	Container build
+Amazon ECR	—	Private image registry
+Amazon EKS	Kubernetes 1.34	Container orchestration
+eksctl	0.227.0	EKS cluster management
+Helm	3	Multi-environment deployment
+NGINX Ingress	4.15.1	Traffic routing
+Kubernetes HPA	autoscaling/v2	Auto-scaling
+GitHub Actions	—	CI/CD pipeline
+AWS CLI	v2	AWS resource management
