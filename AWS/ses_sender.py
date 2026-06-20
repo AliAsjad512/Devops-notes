@@ -33,3 +33,17 @@ class SESEmailSender:
             TemplateData=json.dumps(template_data)
         )
         print(f"Templated email sent: {response['MessageId']}")
+
+
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--from', dest='from_email', required=True)
+    parser.add_argument('--to', dest='to_emails', nargs='+', required=True)
+    parser.add_argument('--subject', required=True)
+    parser.add_argument('--html', required=True, help='HTML body')
+    parser.add_argument('--text', help='Plain text body')
+    parser.add_argument('--region', default='us-east-1')
+    args = parser.parse_args()
+
+    sender = SESEmailSender(args.region)
+    sender.send_email(args.from_email, args.to_emails, args.subject, args.html, args.text)
