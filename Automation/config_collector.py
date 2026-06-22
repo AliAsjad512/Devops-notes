@@ -26,3 +26,10 @@ class ConfigCollector:
                 'source': rule['Source']['Owner']
             })
         return report
+    def print_report(self):
+        report = self.generate_report()
+        print("AWS Config Compliance Report:")
+        print("-" * 50)
+        for r in report:
+            status = "✅" if r['compliance'] == 'COMPLIANT' else "❌"
+            print(f"{status} {r['name']}: {r['compliance']}")
