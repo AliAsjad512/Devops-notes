@@ -33,3 +33,11 @@ class ConfigCollector:
         for r in report:
             status = "✅" if r['compliance'] == 'COMPLIANT' else "❌"
             print(f"{status} {r['name']}: {r['compliance']}")
+
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--region', default='us-east-1')
+    args = parser.parse_args()
+
+    collector = ConfigCollector(args.region)
+    collector.print_report()
