@@ -12,3 +12,16 @@ class ALBHealthChecker:
         targets = response['TargetHealthDescriptions']
         healthy = 0
         unhealthy = 0
+
+        for target in targets:
+            state = target['TargetHealth']['State']
+            target_id = target['Target']['Id']
+            if state == 'healthy':
+                healthy += 1
+                print(f"✅ {target_id}: {state}")
+            else:
+                unhealthy += 1
+                reason = target['TargetHealth'].get('Reason', '')
+                print(f"❌ {target_id}: {state} ({reason})")
+        print(f"\nSummary: {healthy} healthy, {unhealthy} unhealthy")
+        return unhealthy == 0
