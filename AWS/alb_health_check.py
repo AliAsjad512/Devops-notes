@@ -25,3 +25,13 @@ class ALBHealthChecker:
                 print(f"❌ {target_id}: {state} ({reason})")
         print(f"\nSummary: {healthy} healthy, {unhealthy} unhealthy")
         return unhealthy == 0
+    
+
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--target-group', required=True)
+    parser.add_argument('--region', default='us-east-1')
+    args = parser.parse_args()
+
+    checker = ALBHealthChecker(args.target_group, args.region)
+    checker.check_health()
