@@ -24,3 +24,25 @@ Focus: PV, PVC, StorageClass
 "Agastya, let me explain something fundamental about containers. By default, everything written inside a container is ephemeral - temporary. When the container dies, all its data dies with it. This is by design!" - Vashisht
 🧪 Interactive Experiment: Let's See Ephemeral Storage in Action
 Follow along with Agastya as he discovers the problem:
+
+
+# Step 1: Agastya creates a simple pod
+kubectl run test-pod --image=busybox -- sleep 3600
+
+# Step 2: He writes a file inside the container
+kubectl exec test-pod -- sh -c "echo 'Important data!' > /tmp/myfile.txt"
+
+# Step 3: Verify file exists
+kubectl exec test-pod -- cat /tmp/myfile.txt
+# Output: Important data!
+
+# Step 4: Delete the pod (simulating crash)
+kubectl delete pod test-pod
+
+# Step 5: Recreate the same pod
+kubectl run test-pod --image=busybox -- sleep 3600
+
+# Step 6: Try to read the file
+kubectl exec test-pod -- cat /tmp/myfile.txt
+# Output: cat: /tmp/myfile.txt: No such file or directory
+# THE FILE IS GONE! 😱
