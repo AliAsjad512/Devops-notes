@@ -17,3 +17,10 @@ Mission: Understanding stateful workloads
 👨‍🏫 Nandan
 Role: Storage architecture deep-dive
 Focus: PV, PVC, StorageClass
+
+
+🤔 Understanding the Problem: Container Ephemeral Storage
+💭 Agastya's Confusion: "I deployed MySQL in a pod. It was working fine! Why did the data vanish when the pod restarted?"
+"Agastya, let me explain something fundamental about containers. By default, everything written inside a container is ephemeral - temporary. When the container dies, all its data dies with it. This is by design!" - Vashisht
+🧪 Interactive Experiment: Let's See Ephemeral Storage in Action
+Follow along with Agastya as he discovers the problem:
