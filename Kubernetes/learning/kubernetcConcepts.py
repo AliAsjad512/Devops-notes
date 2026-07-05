@@ -91,4 +91,13 @@ These are two different /tmp directories because the Pod has its own filesystem,
 
 
 
+A simple way to explain it in an interview
+"kubectl exec runs commands inside a container in the Pod. Since the echo command is executed inside the Pod, the file /tmp/myfile.txt is created in the Pod's filesystem, not on my local machine. I can verify this by running kubectl exec test-pod -- cat /tmp/myfile.txt or kubectl exec test-pod -- ls /tmp."
+This is the explanation interviewers are usually looking for.
+
+
+
+
+
+
 
