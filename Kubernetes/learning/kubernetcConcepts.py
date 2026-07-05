@@ -81,4 +81,14 @@ Output:
 Important data!
 
 
+How can I prove it's not on my local machine?
+Compare these two commands:
+On your local machine:
+ls /tmp
+Inside the Pod:
+kubectl exec test-pod -- ls /tmp
+These are two different /tmp directories because the Pod has its own filesystem, isolated from your local machine.
+
+
+
 
