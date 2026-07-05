@@ -28,3 +28,5 @@ class BudgetManager:
                  'Subscribers': [{'SubscriptionType': 'EMAIL', 'Address': email}]
             }]
         }
+           response = self.budget.create_budget(**payload)
+        print(f"Budget {budget_name} created with {limit_amount} {limit_unit} limit")
