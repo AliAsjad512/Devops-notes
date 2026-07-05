@@ -30,3 +30,14 @@ class BudgetManager:
         }
            response = self.budget.create_budget(**payload)
         print(f"Budget {budget_name} created with {limit_amount} {limit_unit} limit")
+    
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--account-id', required=True)
+    parser.add_argument('--name', required=True)
+    parser.add_argument('--limit', type=float, required=True)
+    parser.add_argument('--email', required=True)
+    args = parser.parse_args()
+
+    mgr = BudgetManager(args.account_id)
+    mgr.create_budget(args.name, args.limit, email=args.email)
