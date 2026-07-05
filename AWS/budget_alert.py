@@ -24,3 +24,7 @@ class BudgetManager:
                     'Threshold': 80,
                     'ThresholdType': 'PERCENTAGE'
                 },
+
+                 'Subscribers': [{'SubscriptionType': 'EMAIL', 'Address': email}]
+            }]
+        }
