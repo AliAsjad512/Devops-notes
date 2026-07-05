@@ -43,3 +43,30 @@ The main purpose of creating a test Pod is to create a file inside it and store 
 question.
 Your question in natural English
 "We're using this command to create a file inside a Pod, right? But the file is being created in the /tmp directory. How do I know that this file is actually being created inside the Pod and not somewhere else? What tells me that /tmp/myfile.txt belongs to the Pod? How can I verify that the file is inside the Pod?"
+
+
+The key part of the command is:
+kubectl exec test-pod -- sh -c "echo 'Important data!' > /tmp/myfile.txt"
+Let's break it down:
+kubectl exec → Runs a command inside a running Pod.
+test-pod → This is the name of the Pod where the command will run.
+-- → Separates the kubectl command from the command that will run inside the Pod.
+sh -c "..." → Starts a shell inside the Pod and executes the command.
+echo 'Important data!' > /tmp/myfile.txt → Creates the file /tmp/myfile.txt inside the Pod's filesystem.
+How do we know it's inside the Pod?
+Because kubectl exec executes commands inside the container running in the Pod, not on your local machine.
+Think of it like SSH'ing into another computer:
+If you run:
+
+ kubectl exec test-pod -- pwd
+
+ the output is the working directory inside the Pod, not on your laptop or VM.
+
+
+If you run:
+
+ kubectl exec test-pod -- ls /tmp
+
+ you'll see the contents of the Pod's /tmp directory.
+
+
