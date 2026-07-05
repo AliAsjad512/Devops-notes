@@ -16,3 +16,11 @@ class BudgetManager:
                 'BudgetType': 'COST',
                 'CostFilters': {'Service': ['AmazonS3']}  # optional filter
             },
+
+            'NotificationsWithSubscribers': [{
+                'Notification': {
+                    'NotificationType': 'ACTUAL',
+                    'ComparisonOperator': 'GREATER_THAN',
+                    'Threshold': 80,
+                    'ThresholdType': 'PERCENTAGE'
+                },
