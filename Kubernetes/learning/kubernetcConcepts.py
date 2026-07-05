@@ -70,3 +70,15 @@ If you run:
  you'll see the contents of the Pod's /tmp directory.
 
 
+How can I verify the file exists?
+Run:
+kubectl exec test-pod -- ls -l /tmp
+You should see:
+myfile.txt
+Or display its contents:
+kubectl exec test-pod -- cat /tmp/myfile.txt
+Output:
+Important data!
+
+
+
