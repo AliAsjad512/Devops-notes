@@ -44,3 +44,64 @@ User identifies via certificate/token (authentication)
 API server checks: Does this user have permission to DELETE pods in production namespace?
 Look up user's RoleBindings → Find assigned Roles → Check for delete action on pods
 If YES → action allowed; If NO → access denied
+
+
+RBAC Objects
+Object	Scope	Purpose	Example
+Role	Namespace	Define permissions in ONE namespace	developers-role (in dev namespace)
+RoleBinding	Namespace	Bind Role to users/groups in ONE namespace	developer-alice to developers-role
+ClusterRole	Cluster-wide	Define permissions across all namespaces	cluster-admin, node-reader
+ClusterRoleBinding	Cluster-wide	Bind ClusterRole to users/groups	sre-team to cluster-admin
+Key Insight: Role = namespace-scoped permissions. ClusterRole = cluster-wide permissions. Use RoleBinding/ClusterRoleBinding to assign them.
+📝 Creating Roles (Namespace-Scoped)
+"Let's create roles for different teams. First, a role for developers in the dev namespace where they can deploy, but NOT delete." - Aarav
+Developer Role (Create & Update, No Delete)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: developer-role
+  namespace: development  # Namespace-scoped!
+rules:
+# Rule 1: Deployments - create, get, list, update, patch (NO delete)
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["create", "get", "list", "update", "patch"]
+
+# Rule 2: Pods - get, list, logs (read-only)
+- apiGroups: [""]
+  resources: ["pods", "pods/logs"]
+  verbs: ["get", "list", "watch"]
+
+# Rule 3: Services - get, list, create (NO delete)
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list", "create"]
+# Apply the Role
+kubectl apply -f developer-role.yaml
+
+# List roles in development namespace
+kubectl get roles -n development
+
+# View the role details
+kubectl describe role developer-role -n development
+Read-Only Role (For Monitoring/Observability)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: observer-role
+  namespace: production
+rules:
+# Rule 1: Pods - read only
+- apiGroups: [""]
+  resources: ["pods", "pods/logs", "pods/status"]
+  verbs: ["get", "list", "watch"]
+
+# Rule 2: Events - read only
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list"]
+
+# Rule 3: Deployments/Services - read only
+- apiGroups: ["apps"]
+  resources: ["deployments", "statefulsets"]
+  verbs: ["get", "list"]
