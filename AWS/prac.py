@@ -26,3 +26,21 @@ Goal: Audit trail for compliance
 Teaching: Real-world RBAC design
 Focus: Multi-team access patterns
 Mission: Zero trust deployment
+
+
+
+
+🛡️ RBAC: Role-Based Access Control
+"Agastya, the good news - Kubernetes has built-in RBAC (Role-Based Access Control). The bad news - it's not enabled by default on many clusters! Let me teach you how to implement proper access control." - Vashisht
+The RBAC Model
+Subject: WHO wants to access? (User, ServiceAccount, Group)
+Verb: WHAT action? (get, create, delete, update, etc.)
+Resource: WHICH object? (pods, deployments, services, secrets)
+Scope: WHERE? (namespace-scoped or cluster-wide)
+📋 RBAC Flow
+User runs: `kubectl delete pod my-pod -n production`
+Kubernetes API server: "Who are you?"
+User identifies via certificate/token (authentication)
+API server checks: Does this user have permission to DELETE pods in production namespace?
+Look up user's RoleBindings → Find assigned Roles → Check for delete action on pods
+If YES → action allowed; If NO → access denied
