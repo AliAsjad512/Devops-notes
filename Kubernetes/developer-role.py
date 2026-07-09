@@ -18,3 +18,25 @@ rules:
 - apiGroups: [""]
   resources: ["services"]
   verbs: ["get", "list", "create"]
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: observer-role
+  namespace: production
+rules:
+# Rule 1: Pods - read only
+- apiGroups: [""]
+  resources: ["pods", "pods/logs", "pods/status"]
+  verbs: ["get", "list", "watch"]
+
+# Rule 2: Events - read only
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list"]
+
+# Rule 3: Deployments/Services - read only
+- apiGroups: ["apps"]
+  resources: ["deployments", "statefulsets"]
+  verbs: ["get", "list"]
