@@ -45,3 +45,33 @@ class CodeBuildManager:
             time.sleep(5)
             elapsed += 5
         return 'TIMED_OUT'
+    
+
+    if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--region', default='us-east-1')
+    subparsers = parser.add_subparsers(dest='cmd', required=True)
+
+    create = subparsers.add_parser('create')
+    create.add_argument('--name', required=True)
+    create.add_argument('--repo', required=True)
+    create.add_argument('--buildspec', default='buildspec.yml')
+    create.add_argument('--role', required=True)
+
+    start = subparsers.add_parser('start')
+    start.add_argument('--project', required=True)
+    start.add_argument('--version', help='Git branch/commit')
+
+    wait = subparsers.add_parser('wait')
+    wait.add_argument('--build-id', required=True)
+
+    args = parser.parse_args()
+    mgr = CodeBuildManager(args.region)
+
+    if args.cmd == 'create':
+        mgr.create_project(args.name, args.repo, args.buildspec, args.role)
+    elif args.cmd == 'start':
+        build_id = mgr.start_build(args.project, args.version)
+    elif args.cmd == 'wait':
+        status = mgr.wait_for_build(args.build_id)
+        sys.exit(0 if status == 'SUCCEEDED' else 1)
