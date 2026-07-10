@@ -17,3 +17,13 @@ class CodeBuildManager:
             serviceRole=service_role
         )
         print(f"Project {name} created: {response['project']['arn']}")
+
+        def start_build(self, project_name, source_version=None):
+        """Trigger a build."""
+        kwargs = {'projectName': project_name}
+        if source_version:
+            kwargs['sourceVersion'] = source_version
+        response = self.codebuild.start_build(**kwargs)
+        build_id = response['build']['id']
+        print(f"Build started: {build_id}")
+        return build_id
