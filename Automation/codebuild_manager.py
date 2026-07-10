@@ -33,3 +33,15 @@ class CodeBuildManager:
         response = self.codebuild.batch_get_builds(ids=[build_id])
         build = response['builds'][0]
         return build['buildStatus'], build.get('logs', {}).get('deepLink')
+    def wait_for_build(self, build_id, timeout=600):
+        """Wait until build completes."""
+        elapsed = 0
+        while elapsed < timeout:
+            status, log_url = self.get_build_status(build_id)
+            print(f"Status: {status}")
+            if status in ('SUCCEEDED', 'FAILED', 'FAULT', 'TIMED_OUT'):
+                print(f"Logs: {log_url}")
+                return status
+            time.sleep(5)
+            elapsed += 5
+        return 'TIMED_OUT'
