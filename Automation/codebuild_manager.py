@@ -27,3 +27,9 @@ class CodeBuildManager:
         build_id = response['build']['id']
         print(f"Build started: {build_id}")
         return build_id
+    
+    def get_build_status(self, build_id):
+        """Poll build status."""
+        response = self.codebuild.batch_get_builds(ids=[build_id])
+        build = response['builds'][0]
+        return build['buildStatus'], build.get('logs', {}).get('deepLink')
