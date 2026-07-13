@@ -37,3 +37,18 @@ def get_cost_by_tag(self, tag_key, days_back=30):
         )
         # ... parse similar
         return results
+
+def save_csv(self, data, filename):
+        with open(filename, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=data[0].keys())
+            writer.writeheader()
+            writer.writerows(data)
+        print(f"Saved to {filename}")
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--type', choices=['service', 'tag'], default='service')
+    parser.add_argument('--tag-key', help='Tag key for type=tag')
+    parser.add_argument('--days', type=int, default=30)
+    parser.add_argument('--output', default='cost_report.csv')
+    args = parser.parse_args()
