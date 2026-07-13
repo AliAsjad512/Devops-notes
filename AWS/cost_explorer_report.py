@@ -24,3 +24,16 @@ def get_cost_by_service(self, days_back=30):
             results.append({'Service': service, 'CostUSD': round(cost, 2)})
         results.sort(key=lambda x: x['CostUSD'], reverse=True)
         return results
+
+def get_cost_by_tag(self, tag_key, days_back=30):
+        end = datetime.now().date()
+        start = end - timedelta(days=days_back)
+        response = self.ce.get_cost_and_usage(
+            TimePeriod={'Start': start.isoformat(), 'End': end.isoformat()},
+            Granularity='MONTHLY',
+            Metrics=['UnblendedCost'],
+            GroupBy=[{'Type': 'DIMENSION', 'Key': 'LINKED_ACCOUNT'}],
+            Filter={'Tags': {'Key': tag_key, 'Values': ['*']}}
+        )
+        # ... parse similar
+        return results
